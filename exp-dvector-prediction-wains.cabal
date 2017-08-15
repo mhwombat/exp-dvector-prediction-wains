@@ -1,5 +1,5 @@
 name:                exp-dvector-prediction-wains
-version:             1.0.0
+version:             1.0.1
 synopsis:            Agent for predicting the future.
 description:         ALife agent that competes with other
                      agents to predict the future.
@@ -54,6 +54,7 @@ executable exp-dvector-prediction-daemon
                       ALife.Creatur.Wain.DVector.Prediction.Muser
                       ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
                       ALife.Creatur.Wain.DVector.Prediction.Universe
+                      Paths_exp_dvector_prediction_wains
 
 executable exp-dvector-prediction-interactive
   hs-source-dirs:      src
@@ -94,6 +95,7 @@ executable exp-dvector-prediction-interactive
                       ALife.Creatur.Wain.DVector.Prediction.Muser
                       ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
                       ALife.Creatur.Wain.DVector.Prediction.Universe
+                      Paths_exp_dvector_prediction_wains
 
 executable exp-dvector-prediction-init
   hs-source-dirs:      src
@@ -131,6 +133,7 @@ executable exp-dvector-prediction-init
                       ALife.Creatur.Wain.DVector.Prediction.Muser
                       ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
                       ALife.Creatur.Wain.DVector.Prediction.Universe
+                      Paths_exp_dvector_prediction_wains
 
 executable exp-dvector-prediction-examine
   hs-source-dirs:      src
@@ -168,11 +171,12 @@ executable exp-dvector-prediction-examine
                       ALife.Creatur.Wain.DVector.Prediction.Muser
                       ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
                       ALife.Creatur.Wain.DVector.Prediction.Universe
+                      Paths_exp_dvector_prediction_wains
 
 test-suite exp-dvector-prediction-wains-tests
   type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             TestMain.hs
+  hs-source-dirs:      test, src
+  main-is:             Main.hs
   build-depends:       app-settings,
                     array,
                     base,
@@ -202,6 +206,9 @@ test-suite exp-dvector-prediction-wains-tests
                     QuickCheck
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall
   default-language:    Haskell2010
+  other-modules:       ALife.Creatur.Wain.DVector.Prediction.ActionQC
+                       ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
+                       ALife.Creatur.Wain.DVector.Prediction.Action
 
 source-repository head
   type:     git

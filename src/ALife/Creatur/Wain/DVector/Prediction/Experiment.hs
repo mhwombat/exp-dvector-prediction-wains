@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.Experiment
--- Copyright   :  (c) Amy de Buitléir 2012-2016
+-- Copyright   :  (c) Amy de Buitléir 2017
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -242,6 +242,7 @@ startRound = do
     U.writeToLog $ "actual=" ++ show actual
       ++ " predicted=" ++ show predicted
       ++ " err=" ++ show err
+      ++ " %err=" ++ show (err / abs actual)
 
 finishRound :: StateT (U.Universe PatternWain) IO ()
 finishRound = do
