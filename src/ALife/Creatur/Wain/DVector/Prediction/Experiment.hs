@@ -221,14 +221,18 @@ makeLenses ''Experiment
 
 startRound :: StateT (U.Universe PatternWain) IO ()
 startRound = do
+  U.writeToLog "DEBUG 1"
   whenM (zoom U.uDataSource endOfData) $ requestShutdown "end of data"
+  U.writeToLog "DEBUG 2"
   xsOld <- zoom U.uCurrVector getPS
+  U.writeToLog "DEBUG 3"
   xs <- zoom U.uDataSource nextVector
+  U.writeToLog "DEBUG 4"
   let deltas = zipWith (\x xOld -> abs (x - xOld)) xs xsOld
-  -- let deltas = zipWith (abs . (-)) xs xsOld
     -- xs is shorter because it doesn't include any deltas, so the
     -- result will be the same length as xs, and won't include any
     -- deltas of previous deltas.
+  U.writeToLog "DEBUG 5"
   zoom U.uCurrVector $ putPS (xs ++ deltas)
   U.writeToLog $ "Current data: " ++ show xs
   U.writeToLog $ "Deltas: " ++ show deltas
