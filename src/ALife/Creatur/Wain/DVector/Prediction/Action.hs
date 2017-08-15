@@ -29,7 +29,7 @@ import ALife.Creatur.Wain.Pretty (Pretty)
 import ALife.Creatur.Wain.GeneticSOM (Difference)
 import ALife.Creatur.Wain.Statistics (popStdDev)
 import ALife.Creatur.Wain.UnitInterval (UIDouble)
-import Data.List (sort)
+import Data.List (sort, nub)
 import Data.Serialize (Serialize)
 import GHC.Generics (Generic)
 import System.Random (Random, random, randomR)
@@ -69,14 +69,14 @@ makeActionSimilar (Add x) r (Add y)
   = Add $ makeSimilar x r y
 
 expandActionList :: Double -> [Action] -> [Action]
-expandActionList f as = map mkAction (es ++ ms ++ xs)
+expandActionList f as = map mkAction $ nub (es ++ ms ++ xs)
   where xs = sort $ map actionToDouble as :: [Double]
         ms = midpoints xs :: [Double]
         es = extendBoundaries f xs :: [Double]
 
 -- Don't need to sanitise values here, mkAction will do it
 extendBoundaries :: Double -> [Double] -> [Double]
-extendBoundaries _ [] = []
+extendBoundaries _ [] = [1]
 extendBoundaries f (x:[]) = [x/f, f*x]
 extendBoundaries f xs = [head xs - f*sd, last xs + f*sd]
   where sd = popStdDev xs
