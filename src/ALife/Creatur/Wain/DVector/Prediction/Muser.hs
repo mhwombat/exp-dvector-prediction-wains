@@ -59,7 +59,7 @@ data DMuser = DMuser
     --   choosing an action.
     _depth :: Word8,
     -- | Controls how quickly a wain will explore the prediction space
-    _width :: Word8
+    _width :: Double
   } deriving ( Eq, Read, Generic, Ord, Serialize, Diploid, NFData )
 makeLenses ''DMuser
 
@@ -69,7 +69,7 @@ instance Show DMuser where
 
 instance Statistical DMuser where
   stats (DMuser (eo:po:bo:lso:_) d w) = [iStat "depth" d,
-         iStat "width" w,
+         dStat "width" w,
          dStat "default energy outcome" . pm1ToDouble $ eo,
          dStat "default passion outcome" . pm1ToDouble $ po,
          dStat "default boredom outcome" . pm1ToDouble $ bo,
@@ -93,7 +93,7 @@ instance M.Muser DMuser where
   defaultOutcomes = view defaultOutcomes
 
 -- | Constructor
-makeMuser :: [PM1Double] -> Word8 -> Word8 -> Either [String] DMuser
+makeMuser :: [PM1Double] -> Word8 -> Double -> Either [String] DMuser
 makeMuser os d w
  | d == 0         = Left ["zero depth"]
  | length os < 4 = Left ["default outcome list is too short"]
@@ -105,7 +105,7 @@ generateResponses
       -> [(Response Action, Probability)]
 generateResponses m as sps = concatMap (generateResponses' m sps') as'
   where sps' = bestHypotheses m sps
-        as' = expandActionList (fromIntegral $ _width m) as
+        as' = expandActionList (_width m) as
 
 -- | Internal method
 generateResponses'

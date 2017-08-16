@@ -159,7 +159,7 @@ data Universe a = Universe
     _uImprintOutcomeRange :: (PM1Double, PM1Double),
     _uReinforcementDeltasRange :: (PM1Double, PM1Double),
     _uDepthRange :: (Word8, Word8),
-    _uWidthRange :: (Word8, Word8),
+    _uWidthRange :: (Double, Double),
     _uCheckpoints :: [CP.Checkpoint],
     _uCurrVector :: Persistent [Double],
     _uPrevVector :: Persistent [Double],
@@ -313,7 +313,7 @@ cReinforcementDeltasRange = requiredSetting "reinforcementDeltasRange"
 cDepthRange :: Setting (Word8, Word8)
 cDepthRange = requiredSetting "depthRange"
 
-cWidthRange :: Setting (Word8, Word8)
+cWidthRange :: Setting (Double, Double)
 cWidthRange = requiredSetting "widthRange"
 
 cCheckpoints :: Setting [CP.Checkpoint]
