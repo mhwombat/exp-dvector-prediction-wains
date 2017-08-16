@@ -407,12 +407,15 @@ rewardPrediction = do
       eMax <- zoom (universe . U.uMaxIndivError) getPS
       eMin <- zoom (universe . U.uMinIndivError) getPS
       accuracyDeltaE <- use (universe . U.uAccuracyDeltaE)
-      let deltaE = accuracyDeltaE * (eMax - err)/(eMax - eMin)
+      accuracyPower <- use (universe . U.uAccuracyPower)
+      let relAccuracy = (eMax - err)/(eMax - eMin)
+      let deltaE = accuracyDeltaE * (relAccuracy^accuracyPower)
       adjustWainEnergy subject deltaE rPredDeltaE "prediction"
       zoom universe . U.writeToLog $
         agentId a ++ " predicted " ++ show predicted
         ++ ", actual value was " ++ show actual
         ++ ", error was " ++ show err
+        ++ ", rel accuracy was " ++ show relAccuracy
         ++ ", min error was " ++ show eMin
         ++ ", max error was " ++ show eMax
         ++ ", reward is " ++ show deltaE

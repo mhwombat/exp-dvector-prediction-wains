@@ -49,7 +49,7 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uEnergyBudget,
     uAllowedPopulationRange,
     uPopControl,
-    -- uAccuracyPower,
+    uAccuracyPower,
     uAccuracyDeltaE,
     uBaseMetabolismDeltaE,
     uEnergyCostPerClassifierModel,
@@ -139,7 +139,7 @@ data Universe a = Universe
     _uEnergyBudget :: Double,
     _uAllowedPopulationRange :: (Int, Int),
     _uPopControl :: Bool,
-    -- _uAccuracyPower :: Int,
+    _uAccuracyPower :: Int,
     _uAccuracyDeltaE :: Double,
     _uBaseMetabolismDeltaE :: Double,
     _uEnergyCostPerClassifierModel :: Double,
@@ -255,8 +255,8 @@ cAllowedPopulationRange = requiredSetting "allowedPopRange"
 cPopControl :: Setting Bool
 cPopControl = requiredSetting "popControl"
 
--- cAccuracyPower :: Setting Int
--- cAccuracyPower = requiredSetting "accuracyPower"
+cAccuracyPower :: Setting Int
+cAccuracyPower = requiredSetting "accuracyPower"
 
 cAccuracyDeltaE :: Setting Double
 cAccuracyDeltaE = requiredSetting "accuracyDeltaE"
@@ -360,7 +360,7 @@ config2Universe getSetting =
       _uEnergyBudget = fromIntegral p0 * 0.5,
       _uAllowedPopulationRange = (a', b'),
       _uPopControl = getSetting cPopControl,
-      -- _uAccuracyPower = getSetting cAccuracyPower,
+      _uAccuracyPower = getSetting cAccuracyPower,
       _uAccuracyDeltaE = getSetting cAccuracyDeltaE,
       _uBaseMetabolismDeltaE = getSetting cBaseMetabolismDeltaE,
       _uEnergyCostPerClassifierModel
