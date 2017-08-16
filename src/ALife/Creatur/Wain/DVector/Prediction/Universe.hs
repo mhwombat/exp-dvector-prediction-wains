@@ -49,7 +49,7 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uEnergyBudget,
     uAllowedPopulationRange,
     uPopControl,
-    uAccuracyPower,
+    -- uAccuracyPower,
     uAccuracyDeltaE,
     uBaseMetabolismDeltaE,
     uEnergyCostPerClassifierModel,
@@ -76,6 +76,7 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uPreviousPredictions,
     uNewPredictions,
     uMaxIndivError,
+    uMinIndivError,
     -- * Other
     U.agentIds,
     U.currentTime,
@@ -138,7 +139,7 @@ data Universe a = Universe
     _uEnergyBudget :: Double,
     _uAllowedPopulationRange :: (Int, Int),
     _uPopControl :: Bool,
-    _uAccuracyPower :: Int,
+    -- _uAccuracyPower :: Int,
     _uAccuracyDeltaE :: Double,
     _uBaseMetabolismDeltaE :: Double,
     _uEnergyCostPerClassifierModel :: Double,
@@ -165,7 +166,8 @@ data Universe a = Universe
     _uPreviousPredictions
       :: Persistent [(AgentId, Response Action, Double)],
     _uNewPredictions :: Persistent [(AgentId, Response Action, Double)],
-    _uMaxIndivError :: Persistent Double
+    _uMaxIndivError :: Persistent Double,
+    _uMinIndivError :: Persistent Double
   } deriving Show
 makeLenses ''Universe
 
@@ -253,8 +255,8 @@ cAllowedPopulationRange = requiredSetting "allowedPopRange"
 cPopControl :: Setting Bool
 cPopControl = requiredSetting "popControl"
 
-cAccuracyPower :: Setting Int
-cAccuracyPower = requiredSetting "accuracyPower"
+-- cAccuracyPower :: Setting Int
+-- cAccuracyPower = requiredSetting "accuracyPower"
 
 cAccuracyDeltaE :: Setting Double
 cAccuracyDeltaE = requiredSetting "accuracyDeltaE"
@@ -358,7 +360,7 @@ config2Universe getSetting =
       _uEnergyBudget = fromIntegral p0 * 0.5,
       _uAllowedPopulationRange = (a', b'),
       _uPopControl = getSetting cPopControl,
-      _uAccuracyPower = getSetting cAccuracyPower,
+      -- _uAccuracyPower = getSetting cAccuracyPower,
       _uAccuracyDeltaE = getSetting cAccuracyDeltaE,
       _uBaseMetabolismDeltaE = getSetting cBaseMetabolismDeltaE,
       _uEnergyCostPerClassifierModel
@@ -387,7 +389,8 @@ config2Universe getSetting =
       _uPreviousPredictions
         = mkPersistent [] (workDir ++ "/prevPredictions"),
       _uNewPredictions = mkPersistent [] (workDir ++ "/newPredictions"),
-      _uMaxIndivError = mkPersistent 0 (workDir ++ "/sumNaiveForecastError")
+      _uMaxIndivError = mkPersistent 0 (workDir ++ "/maxIndivError"),
+      _uMinIndivError = mkPersistent 0 (workDir ++ "/minIndivError")
     }
   where en = getSetting cExperimentName
         workDir = getSetting cWorkingDir

@@ -248,11 +248,14 @@ evaluateErrors = do
     let popError = abs (actual - popPrediction)
     let es = zipWith (\x p -> abs (x - p)) xs ps
     let maxIndivError = maximum es
+    let minIndivError = minimum es
     zoom U.uMaxIndivError $ putPS maxIndivError
+    zoom U.uMinIndivError $ putPS minIndivError
     U.writeToLog $ "actual=" ++ show actual
       ++ " pop. prediction=" ++ show popPrediction
       ++ " pop. error=" ++ show popError
-      ++ " max individual error=" ++ show maxIndivError
+    U.writeToLog $ "max individual error=" ++ show maxIndivError
+      ++ " min individual error=" ++ show minIndivError
 
 rotatePredictions :: StateT (U.Universe PatternWain) IO ()
 rotatePredictions = do
@@ -401,19 +404,17 @@ rewardPrediction = do
     Just (r, predicted) -> do
       actual <- head <$> zoom (universe . U.uCurrVector) getPS
       let err = abs(actual - predicted)
-      maxError <- zoom (universe . U.uMaxIndivError) getPS :: StateT Experiment IO Double
-      let relativeError = err/maxError
-      let relAccuracy = 1 - relativeError
-      accuracyPower <- use (universe . U.uAccuracyPower)
+      eMax <- zoom (universe . U.uMaxIndivError) getPS
+      eMin <- zoom (universe . U.uMinIndivError) getPS
       accuracyDeltaE <- use (universe . U.uAccuracyDeltaE)
-      let deltaE = (relAccuracy^accuracyPower) * accuracyDeltaE
+      let deltaE = accuracyDeltaE * (eMax - err)/(eMax - eMin)
       adjustWainEnergy subject deltaE rPredDeltaE "prediction"
       zoom universe . U.writeToLog $
         agentId a ++ " predicted " ++ show predicted
         ++ ", actual value was " ++ show actual
         ++ ", error was " ++ show err
-        ++ ", relative error was " ++ show relativeError
-        ++ ", relative accuracy was " ++ show relAccuracy
+        ++ ", min error was " ++ show eMin
+        ++ ", max error was " ++ show eMax
         ++ ", reward is " ++ show deltaE
       assign (summary . rPredictedValue) predicted
       assign (summary . rActualValue) actual
