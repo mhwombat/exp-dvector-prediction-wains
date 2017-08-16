@@ -78,7 +78,7 @@ expandActionList f as = map mkAction $ nub (es ++ ms ++ xs)
 -- Don't need to sanitise values here, mkAction will do it
 extendBoundaries :: Double -> [Double] -> [Double]
 extendBoundaries _ [] = [1]
-extendBoundaries f (x:[]) = [x/f, f*x]
+extendBoundaries f (x:[]) = [x - f*x, x + f*x]
 extendBoundaries f xs = [head xs - f*sd, last xs + f*sd]
   where sd = popStdDev xs
 
