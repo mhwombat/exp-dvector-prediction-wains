@@ -222,6 +222,12 @@ makeLenses ''Experiment
 startRound :: StateT (U.Universe PatternWain) IO ()
 startRound = do
   whenM (zoom U.uDataSource endOfData) $ requestShutdown "end of data"
+  updateVector
+  evaluateErrors
+  rotatePredictions
+
+updateVector :: StateT (U.Universe PatternWain) IO ()
+updateVector = do
   xsOld <- zoom U.uCurrVector getPS
   xs <- zoom U.uDataSource nextVector
   let deltas = zipWith (\x xOld -> abs (x - xOld)) xs xsOld
@@ -231,17 +237,28 @@ startRound = do
   zoom U.uCurrVector $ putPS (xs ++ deltas)
   U.writeToLog $ "Current data: " ++ show xs
   U.writeToLog $ "Deltas: " ++ show deltas
-  let actual = head xs
+
+evaluateErrors :: StateT (U.Universe PatternWain) IO ()
+evaluateErrors = do
+  xs <- zoom U.uCurrVector getPS
+  ps <- fmap (map thirdOfThree) $ zoom U.uNewPredictions getPS
+  when (not . null $ ps) $ do
+    let actual = head xs
+    let popPrediction = mean ps
+    let popError = abs (actual - popPrediction)
+    let es = zipWith (\x p -> abs (x - p)) xs ps
+    let maxIndivError = maximum es
+    zoom U.uMaxIndivError $ putPS maxIndivError
+    U.writeToLog $ "actual=" ++ show actual
+      ++ " pop. prediction=" ++ show popPrediction
+      ++ " pop. error=" ++ show popError
+      ++ " max individual error=" ++ show maxIndivError
+
+rotatePredictions :: StateT (U.Universe PatternWain) IO ()
+rotatePredictions = do
   ps <- zoom U.uNewPredictions getPS
   zoom U.uPreviousPredictions $ putPS ps
   zoom U.uNewPredictions $ putPS []
-  when (not . null $ ps) $ do
-    let predicted = mean . map thirdOfThree $ ps
-    let err = abs (actual - predicted)
-    U.writeToLog $ "actual=" ++ show actual
-      ++ " predicted=" ++ show predicted
-      ++ " err=" ++ show err
-      ++ " %err=" ++ show (err / abs actual)
 
 finishRound :: StateT (U.Universe PatternWain) IO ()
 finishRound = do
@@ -382,20 +399,24 @@ rewardPrediction = do
     Nothing ->
       zoom universe . U.writeToLog $ "First turn for " ++ agentId a
     Just (r, predicted) -> do
+      actual <- head <$> zoom (universe . U.uCurrVector) getPS
+      let err = abs(actual - predicted)
+      maxError <- zoom (universe . U.uMaxIndivError) getPS :: StateT Experiment IO Double
+      let relativeError = err/maxError
+      let relAccuracy = 1 - err
       accuracyPower <- use (universe . U.uAccuracyPower)
       accuracyDeltaE <- use (universe . U.uAccuracyDeltaE)
-      actual <- head <$> zoom (universe . U.uCurrVector) getPS
-      let accuracy = 1 - abs(actual - predicted)
-      let deltaE = (accuracy^accuracyPower) * accuracyDeltaE
+      let deltaE = (relAccuracy^accuracyPower) * accuracyDeltaE
       adjustWainEnergy subject deltaE rPredDeltaE "prediction"
       zoom universe . U.writeToLog $
         agentId a ++ " predicted " ++ show predicted
         ++ ", actual value was " ++ show actual
-        ++ ", accuracy was " ++ show accuracy
+        ++ ", error was " ++ show err
+        ++ ", relative error was " ++ show relativeError
+        ++ ", relative accuracy was " ++ show relAccuracy
         ++ ", reward is " ++ show deltaE
       assign (summary . rPredictedValue) predicted
       assign (summary . rActualValue) actual
-      let err = abs $ actual - predicted
       assign (summary . rValuePredictionErr) err
       letSubjectReflect a r
       -- zoom (universe . U.uPredictions) . putPS . remove3 (agentId a) $ ps

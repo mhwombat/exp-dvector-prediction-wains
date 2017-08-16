@@ -75,6 +75,7 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uPrevVector,
     uPreviousPredictions,
     uNewPredictions,
+    uMaxIndivError,
     -- * Other
     U.agentIds,
     U.currentTime,
@@ -163,7 +164,8 @@ data Universe a = Universe
     _uPrevVector :: Persistent [Double],
     _uPreviousPredictions
       :: Persistent [(AgentId, Response Action, Double)],
-    _uNewPredictions :: Persistent [(AgentId, Response Action, Double)]
+    _uNewPredictions :: Persistent [(AgentId, Response Action, Double)],
+    _uMaxIndivError :: Persistent Double
   } deriving Show
 makeLenses ''Universe
 
@@ -384,7 +386,8 @@ config2Universe getSetting =
       _uPrevVector = mkPersistent zeroes (workDir ++ "/prevVector"),
       _uPreviousPredictions
         = mkPersistent [] (workDir ++ "/prevPredictions"),
-      _uNewPredictions = mkPersistent [] (workDir ++ "/newPredictions")
+      _uNewPredictions = mkPersistent [] (workDir ++ "/newPredictions"),
+      _uMaxIndivError = mkPersistent 0 (workDir ++ "/sumNaiveForecastError")
     }
   where en = getSetting cExperimentName
         workDir = getSetting cWorkingDir
