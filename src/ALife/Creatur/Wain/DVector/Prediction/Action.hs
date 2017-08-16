@@ -15,6 +15,7 @@ module ALife.Creatur.Wain.DVector.Prediction.Action
   (
     Action,
     mkAction,
+    actionToDouble,
     predict,
     postdict,
     actionDiff,

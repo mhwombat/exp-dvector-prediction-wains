@@ -403,7 +403,7 @@ rewardPrediction = do
       let err = abs(actual - predicted)
       maxError <- zoom (universe . U.uMaxIndivError) getPS :: StateT Experiment IO Double
       let relativeError = err/maxError
-      let relAccuracy = 1 - err
+      let relAccuracy = 1 - relativeError
       accuracyPower <- use (universe . U.uAccuracyPower)
       accuracyDeltaE <- use (universe . U.uAccuracyDeltaE)
       let deltaE = (relAccuracy^accuracyPower) * accuracyDeltaE
