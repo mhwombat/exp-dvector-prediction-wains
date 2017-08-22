@@ -246,13 +246,14 @@ evaluateErrors = do
     let actual = head xs
     let popPrediction = mean ps
     let popError = abs (actual - popPrediction)
-    let es = zipWith (\x p -> abs (x - p)) xs ps
+    let es = map (actual -) ps
     let maxIndivError = maximum es
     let minIndivError = minimum es
     zoom U.uMaxIndivError $ putPS maxIndivError
     zoom U.uMinIndivError $ putPS minIndivError
     debug <- zoom U.uNewPredictions getPS
     U.writeToLog $ "DEBUG debug=" ++ show debug
+    U.writeToLog $ "ps=" ++ show ps
     U.writeToLog $ "es=" ++ show es
     U.writeToLog $ "actual=" ++ show actual
       ++ " pop. prediction=" ++ show popPrediction
