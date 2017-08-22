@@ -251,6 +251,9 @@ evaluateErrors = do
     let minIndivError = minimum es
     zoom U.uMaxIndivError $ putPS maxIndivError
     zoom U.uMinIndivError $ putPS minIndivError
+    debug <- zoom U.uNewPredictions getPS
+    U.writeToLog $ "DEBUG debug=" ++ show debug
+    U.writeToLog $ "es=" ++ show es
     U.writeToLog $ "actual=" ++ show actual
       ++ " pop. prediction=" ++ show popPrediction
       ++ " pop. error=" ++ show popError
