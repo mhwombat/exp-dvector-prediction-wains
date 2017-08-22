@@ -413,7 +413,9 @@ rewardPrediction = do
       accuracyDeltaE <- use (universe . U.uAccuracyDeltaE)
       accuracyPower <- use (universe . U.uAccuracyPower)
       let relAccuracy = (eMax - err)/(eMax - eMin)
-      let deltaE = accuracyDeltaE * (relAccuracy^accuracyPower)
+      let deltaE = if eMax == eMin
+                      then accuracyDeltaE
+                      else accuracyDeltaE * (relAccuracy^accuracyPower)
       adjustWainEnergy subject deltaE rPredDeltaE "prediction"
       zoom universe . U.writeToLog $
         agentId a ++ " predicted " ++ show predicted
