@@ -246,7 +246,7 @@ evaluateErrors = do
     let actual = head xs
     let popPrediction = mean ps
     let popError = abs (actual - popPrediction)
-    let es = map (actual -) ps
+    let es = map (abs . (actual -)) ps
     let maxIndivError = maximum es
     let minIndivError = minimum es
     zoom U.uMaxIndivError $ putPS maxIndivError
