@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.DataSource
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2015-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -47,6 +47,7 @@ initIfNeeded = do
 initialise :: DataSource -> IO DataSource
 initialise d = do
   h <- openFile (fileName d) ReadMode
+  _ <- liftIO $ hGetLine h -- skip the header line
   return d { initialised = True, fileHandle = h }
 
 -- TODO: Close file properly when end of data reached.

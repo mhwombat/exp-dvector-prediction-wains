@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.Muser
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2013-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -34,6 +34,7 @@ import ALife.Creatur.Wain.DVector.Prediction.Action (Action,
 import ALife.Creatur.Wain.GeneticSOM (Label)
 import qualified ALife.Creatur.Wain.Muser as M
 import ALife.Creatur.Wain.PlusMinusOne (PM1Double, pm1ToDouble)
+import ALife.Creatur.Wain.Pretty (Pretty)
 import ALife.Creatur.Wain.Response (Response(..))
 import ALife.Creatur.Wain.Probability (Probability)
 import ALife.Creatur.Wain.Statistics (Statistical, stats, iStat, dStat)
@@ -66,6 +67,8 @@ makeLenses ''DMuser
 instance Show DMuser where
   show (DMuser o d w)
     = "makeDMuser " ++ show o ++ " " ++ show d ++ " " ++ show w
+
+instance Pretty DMuser
 
 instance Statistical DMuser where
   stats (DMuser (eo:po:bo:lso:_) d w) = [iStat "depth" d,

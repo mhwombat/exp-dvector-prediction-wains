@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.Action
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2012-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -28,8 +28,8 @@ import ALife.Creatur.Genetics.Diploid (Diploid)
 import ALife.Creatur.Wain.DVector.Double (sanitise, diff, makeSimilar)
 import ALife.Creatur.Wain.Pretty (Pretty)
 import ALife.Creatur.Wain.GeneticSOM (Difference)
-import ALife.Creatur.Wain.Statistics (popStdDev)
-import ALife.Creatur.Wain.UnitInterval (UIDouble)
+import ALife.Creatur.Wain.Statistics (Statistical(..), dStat, popStdDev)
+import ALife.Creatur.Wain.UnitInterval (UIDouble, doubleToUI)
 import Data.List (sort, nub)
 import Data.Serialize (Serialize)
 import GHC.Generics (Generic)
@@ -55,6 +55,9 @@ instance Random Action where
   random g = (Add z, g')
     where (z, g') = random g
 
+instance Statistical Action where
+  stats a = [dStat "action" . actionToDouble $ a]
+
 predict :: Action -> Double -> Double
 predict (Add z) x = sanitise $ x + z
 
@@ -63,7 +66,7 @@ postdict x1 x2 = Add z
   where z = sanitise (x2 - x1)
 
 actionDiff :: Action -> Action -> Difference
-actionDiff (Add x) (Add y) = diff x y
+actionDiff (Add x) (Add y) = doubleToUI $ diff x y
 
 makeActionSimilar :: Action -> UIDouble -> Action -> Action
 makeActionSimilar (Add x) r (Add y)

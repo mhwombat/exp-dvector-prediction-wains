@@ -1,215 +1,169 @@
-name:                exp-dvector-prediction-wains
-version:             1.0.5
-synopsis:            Agent for predicting the future.
-description:         ALife agent that competes with other
-                     agents to predict the future.
-homepage:            https://github.com/mhwombat/exp-dvector-prediction-wains#readme
-bug-reports:         https://github.com/mhwombat/exp-dvector-prediction-wains/issues
-license:             BSD3
-license-file:        LICENSE
-author:              Amy de Buitléir
-maintainer:          amy@nualeargais.ie
-copyright:           (c) 2017 Amy de Buitléir
-category:            AI
-build-type:          Simple
--- extra-source-files:
-cabal-version:       >=1.10
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: f9e8569ff0540ad7916fca7bcb94fcdd84a747f27676e57f2a704a71c352f661
 
-executable exp-dvector-prediction-daemon
-  hs-source-dirs:      src
-  main-is:             ALife/Creatur/Wain/DVector/Prediction/Daemon.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
-  build-depends:    app-settings,
-                    array,
-                    base,
-                    bytestring,
-                    cereal,
-                    colour,
-                    cond,
-                    containers,
-                    creatur,
-                    creatur-dvector-wains,
-                    creatur-wains,
-                    deepseq,
-                    directory,
-                    filepath,
-                    hdaemonize,
-                    lens,
-                    MonadRandom,
-                    mtl,
-                    old-locale,
-                    random,
-                    som,
-                    split,
-                    text,
-                    time,
-                    transformers,
-                    unix,
-                    vector,
-                    zlib
-  default-language:   Haskell2010
-  other-modules:      ALife.Creatur.Wain.DVector.Prediction.Action
-                      ALife.Creatur.Wain.DVector.Prediction.DataSource
-                      ALife.Creatur.Wain.DVector.Prediction.Experiment
-                      ALife.Creatur.Wain.DVector.Prediction.Muser
-                      ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
-                      ALife.Creatur.Wain.DVector.Prediction.Universe
-                      Paths_exp_dvector_prediction_wains
-
-executable exp-dvector-prediction-interactive
-  hs-source-dirs:      src
-  main-is:             ALife/Creatur/Wain/DVector/Prediction/Interactive.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
-  build-depends:    app-settings,
-                    array,
-                    base,
-                    bytestring,
-                    cereal,
-                    colour,
-                    cond,
-                    containers,
-                    creatur,
-                    creatur-dvector-wains,
-                    creatur-wains,
-                    deepseq,
-                    directory,
-                    filepath,
-                    hdaemonize,
-                    lens,
-                    MonadRandom,
-                    mtl,
-                    old-locale,
-                    random,
-                    som,
-                    split,
-                    text,
-                    time,
-                    transformers,
-                    unix,
-                    vector,
-                    zlib
-  default-language:    Haskell2010
-  other-modules:      ALife.Creatur.Wain.DVector.Prediction.Action
-                      ALife.Creatur.Wain.DVector.Prediction.DataSource
-                      ALife.Creatur.Wain.DVector.Prediction.Experiment
-                      ALife.Creatur.Wain.DVector.Prediction.Muser
-                      ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
-                      ALife.Creatur.Wain.DVector.Prediction.Universe
-                      Paths_exp_dvector_prediction_wains
-
-executable exp-dvector-prediction-init
-  hs-source-dirs:      src
-  main-is:             ALife/Creatur/Wain/DVector/Prediction/GeneratePopulation.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
-  build-depends:    app-settings,
-                    array,
-                    base,
-                    cereal,
-                    colour,
-                    cond,
-                    containers,
-                    creatur,
-                    creatur-dvector-wains,
-                    creatur-wains,
-                    deepseq,
-                    directory,
-                    filepath,
-                    lens,
-                    MonadRandom,
-                    mtl,
-                    old-locale,
-                    random,
-                    som,
-                    split,
-                    time,
-                    transformers,
-                    unix,
-                    vector,
-                    zlib
-  default-language:    Haskell2010
-  other-modules:      ALife.Creatur.Wain.DVector.Prediction.Action
-                      ALife.Creatur.Wain.DVector.Prediction.DataSource
-                      ALife.Creatur.Wain.DVector.Prediction.Experiment
-                      ALife.Creatur.Wain.DVector.Prediction.Muser
-                      ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
-                      ALife.Creatur.Wain.DVector.Prediction.Universe
-                      Paths_exp_dvector_prediction_wains
-
-executable exp-dvector-prediction-examine
-  hs-source-dirs:      src
-  main-is:             ALife/Creatur/Wain/DVector/Prediction/GeneratePopulation.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
-  build-depends:    app-settings,
-                    array,
-                    base,
-                    cereal,
-                    colour,
-                    cond,
-                    containers,
-                    creatur,
-                    creatur-dvector-wains,
-                    creatur-wains,
-                    deepseq,
-                    directory,
-                    filepath,
-                    lens,
-                    MonadRandom,
-                    mtl,
-                    old-locale,
-                    random,
-                    som,
-                    split,
-                    time,
-                    transformers,
-                    unix,
-                    vector,
-                    zlib
-  default-language:    Haskell2010
-  other-modules:      ALife.Creatur.Wain.DVector.Prediction.Action
-                      ALife.Creatur.Wain.DVector.Prediction.DataSource
-                      ALife.Creatur.Wain.DVector.Prediction.Experiment
-                      ALife.Creatur.Wain.DVector.Prediction.Muser
-                      ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
-                      ALife.Creatur.Wain.DVector.Prediction.Universe
-                      Paths_exp_dvector_prediction_wains
-
-test-suite exp-dvector-prediction-wains-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test, src
-  main-is:             Main.hs
-  build-depends:       app-settings,
-                    array,
-                    base,
-                    bytestring,
-                    cereal,
-                    colour,
-                    cond,
-                    containers,
-                    creatur,
-                    creatur-dvector-wains,
-                    creatur-wains,
-                    creatur-wains-test-utils,
-                    deepseq,
-                    directory,
-                    filepath,
-                    lens,
-                    MonadRandom,
-                    mtl,
-                    random,
-                    som,
-                    split,
-                    test-framework,
-                    test-framework-hunit,
-                    test-framework-quickcheck2,
-                    transformers,
-                    vector,
-                    QuickCheck
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -Wall
-  default-language:    Haskell2010
-  other-modules:       ALife.Creatur.Wain.DVector.Prediction.ActionQC
-                       ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
-                       ALife.Creatur.Wain.DVector.Prediction.Action
+name:           exp-dvector-prediction-wains
+version:        1.0.8
+description:    Please see the README on GitHub at <https://github.com/mhwombat/exp-dvector-prediction-wains#readme>
+homepage:       https://github.com/mhwombat/exp-dvector-prediction-wains#readme
+bug-reports:    https://github.com/mhwombat/exp-dvector-prediction-wains/issues
+author:         Amy de Buitléir
+maintainer:     amy@nualeargais.ie
+copyright:      2018 Amy de Buitléir
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    ChangeLog.md
+    README.md
 
 source-repository head
-  type:     git
+  type: git
   location: https://github.com/mhwombat/exp-dvector-prediction-wains
+
+library
+  exposed-modules:
+      ALife.Creatur.Wain.DVector.Prediction.Action
+      ALife.Creatur.Wain.DVector.Prediction.DataSource
+      ALife.Creatur.Wain.DVector.Prediction.Experiment
+      ALife.Creatur.Wain.DVector.Prediction.Muser
+      ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
+      ALife.Creatur.Wain.DVector.Prediction.Universe
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Werror
+  build-depends:
+      MonadRandom
+    , app-settings
+    , base >=4.7 && <5
+    , cereal
+    , cond
+    , containers
+    , creatur
+    , creatur-dvector-wains
+    , creatur-wains
+    , deepseq
+    , directory
+    , filepath
+    , lens
+    , mtl
+    , random
+    , split
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-agent-csv
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      appAgentCSV
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      base >=4.7 && <5
+    , creatur-wains
+    , exp-dvector-prediction-wains
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-brain-report
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      appBrainReport
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , creatur
+    , creatur-wains
+    , exp-dvector-prediction-wains
+    , lens
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-daemon
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      base >=4.7 && <5
+    , creatur
+    , exp-dvector-prediction-wains
+    , hdaemonize
+    , lens
+    , mtl
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-examine-agent
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      appExamineAgent
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      base >=4.7 && <5
+    , creatur-wains
+    , exp-dvector-prediction-wains
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-init
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      appGenPop
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      MonadRandom
+    , base >=4.7 && <5
+    , creatur
+    , creatur-wains
+    , exp-dvector-prediction-wains
+    , lens
+    , mtl
+  default-language: Haskell2010
+
+executable exp-dvector-prediction-wains-interactive
+  main-is: Main.hs
+  other-modules:
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      appInteractive
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      base >=4.7 && <5
+    , creatur
+    , exp-dvector-prediction-wains
+    , lens
+    , mtl
+  default-language: Haskell2010
+
+test-suite exp-dvector-prediction-wains-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      ALife.Creatur.Wain.DVector.Prediction.ActionQC
+      ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
+      ALife.Creatur.Wain.DVector.Prediction.ResponseTweakerQC
+      Paths_exp_dvector_prediction_wains
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Werror
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , creatur-dvector-wains
+    , creatur-wains
+    , creatur-wains-test-utils
+    , exp-dvector-prediction-wains
+    , test-framework
+    , test-framework-quickcheck2
+  default-language: Haskell2010

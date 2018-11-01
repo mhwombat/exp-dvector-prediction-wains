@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.Universe
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2012-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -32,12 +32,14 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uStatsFile,
     uRawStatsFile,
     uDataSource,
+    uShowClassifierModels,
     uShowPredictorModels,
-    uShowPredictions,
+    uShowClassificationReport,
     uShowScenarioReport,
-    uShowResponseReport,
-    uShowDecisionReport,
-    uGenFmris,
+    uShowPredictionReport,
+    uShowActionReport,
+    uShowReflectionReport,
+    uShowImprintReport,
     uSleepBetweenTasks,
     uVectorLength,
     uClassifierSizeRange,
@@ -46,13 +48,13 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uMaturityRange,
     uMaxAge,
     uInitialPopulationSize,
-    uEnergyBudget,
+    uInitialEnergy,
     uAllowedPopulationRange,
     uPopControl,
-    uAccuracyPower,
-    uAccuracyDeltaE,
+    uMeanAccuracyDeltaE,
+    uMaxAccuracyDeltaE,
     uBaseMetabolismDeltaE,
-    uEnergyCostPerClassifierModel,
+    uAdjustableMetabolismDeltaE,
     uChildCostFactor,
     uFlirtingFrequency,
     uPopControlDeltaE,
@@ -73,10 +75,13 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uCheckpoints,
     uCurrVector,
     uPrevVector,
-    uPreviousPredictions,
     uNewPredictions,
-    uMaxIndivError,
-    uMinIndivError,
+    uPrevPredictions,
+    uMeanError,
+    uMinError,
+    uPrevMetabMetrics,
+    uCurrMetabMetrics,
+    uPrevMeanMetabMetric,
     -- * Other
     U.agentIds,
     U.currentTime,
@@ -122,12 +127,14 @@ data Universe a = Universe
     _uStatsFile :: FilePath,
     _uRawStatsFile :: FilePath,
     _uDataSource :: DataSource,
+    _uShowClassifierModels :: Bool,
     _uShowPredictorModels :: Bool,
-    _uShowPredictions :: Bool,
+    _uShowClassificationReport :: Bool,
     _uShowScenarioReport :: Bool,
-    _uShowResponseReport :: Bool,
-    _uShowDecisionReport :: Bool,
-    _uGenFmris :: Bool,
+    _uShowPredictionReport :: Bool,
+    _uShowActionReport :: Bool,
+    _uShowReflectionReport :: Bool,
+    _uShowImprintReport :: Bool,
     _uSleepBetweenTasks :: Int,
     _uVectorLength :: Int,
     _uClassifierSizeRange :: (Word64, Word64),
@@ -136,13 +143,13 @@ data Universe a = Universe
     _uMaturityRange :: (Word16, Word16),
     _uMaxAge :: Int,
     _uInitialPopulationSize :: Int,
-    _uEnergyBudget :: Double,
+    _uInitialEnergy :: Double,
     _uAllowedPopulationRange :: (Int, Int),
     _uPopControl :: Bool,
-    _uAccuracyPower :: Int,
-    _uAccuracyDeltaE :: Double,
+    _uMeanAccuracyDeltaE :: Double,
+    _uMaxAccuracyDeltaE :: Double,
     _uBaseMetabolismDeltaE :: Double,
-    _uEnergyCostPerClassifierModel :: Double,
+    _uAdjustableMetabolismDeltaE :: Double,
     _uChildCostFactor :: Double,
     _uFlirtingFrequency :: UIDouble,
     _uPopControlDeltaE :: Persistent Double,
@@ -163,11 +170,13 @@ data Universe a = Universe
     _uCheckpoints :: [CP.Checkpoint],
     _uCurrVector :: Persistent [Double],
     _uPrevVector :: Persistent [Double],
-    _uPreviousPredictions
-      :: Persistent [(AgentId, Response Action, Double)],
+    _uPrevPredictions :: Persistent [(AgentId, Response Action, Double)],
+    _uMeanError :: Persistent Double,
+    _uMinError :: Persistent Double,
     _uNewPredictions :: Persistent [(AgentId, Response Action, Double)],
-    _uMaxIndivError :: Persistent Double,
-    _uMinIndivError :: Persistent Double
+    _uPrevMetabMetrics :: Persistent [(AgentId, Double)],
+    _uCurrMetabMetrics :: Persistent [(AgentId, Double)],
+    _uPrevMeanMetabMetric :: Persistent Double
   } deriving Show
 makeLenses ''Universe
 
@@ -205,23 +214,29 @@ cDataFile = requiredSetting "dataFile"
 cCacheSize :: Setting Int
 cCacheSize = requiredSetting "cacheSize"
 
+cShowClassifierModels :: Setting Bool
+cShowClassifierModels = requiredSetting "showClassifierModels"
+
 cShowPredictorModels :: Setting Bool
 cShowPredictorModels = requiredSetting "showPredictorModels"
 
-cShowPredictions :: Setting Bool
-cShowPredictions = requiredSetting "showPredictions"
+cShowClassificationReport :: Setting Bool
+cShowClassificationReport = requiredSetting "showClassificationReport"
 
 cShowScenarioReport :: Setting Bool
 cShowScenarioReport = requiredSetting "showScenarioReport"
 
-cShowResponseReport :: Setting Bool
-cShowResponseReport = requiredSetting "showResponseReport"
+cShowPredictionReport :: Setting Bool
+cShowPredictionReport = requiredSetting "showPredictionReport"
 
-cShowDecisionReport :: Setting Bool
-cShowDecisionReport = requiredSetting "showDecisionReport"
+cShowActionReport :: Setting Bool
+cShowActionReport = requiredSetting "showActionReport"
 
-cGenFmris :: Setting Bool
-cGenFmris = requiredSetting "genFMRIs"
+cShowReflectionReport :: Setting Bool
+cShowReflectionReport = requiredSetting "showReflectionReport"
+
+cShowImprintReport :: Setting Bool
+cShowImprintReport = requiredSetting "showImprintReport"
 
 cSleepBetweenTasks :: Setting Int
 cSleepBetweenTasks = requiredSetting "sleepTimeBetweenTasks"
@@ -249,24 +264,27 @@ cMaxAge = requiredSetting "maxAge"
 cInitialPopulationSize :: Setting Int
 cInitialPopulationSize = requiredSetting "initialPopSize"
 
+cInitialEnergy :: Setting Double
+cInitialEnergy = requiredSetting "initialEnergy"
+
 cAllowedPopulationRange :: Setting (Double, Double)
 cAllowedPopulationRange = requiredSetting "allowedPopRange"
 
 cPopControl :: Setting Bool
 cPopControl = requiredSetting "popControl"
 
-cAccuracyPower :: Setting Int
-cAccuracyPower = requiredSetting "accuracyPower"
+cMeanAccuracyDeltaE :: Setting Double
+cMeanAccuracyDeltaE = requiredSetting "meanAccuracyDeltaE"
 
-cAccuracyDeltaE :: Setting Double
-cAccuracyDeltaE = requiredSetting "accuracyDeltaE"
+cMaxAccuracyDeltaE :: Setting Double
+cMaxAccuracyDeltaE = requiredSetting "maxAccuracyDeltaE"
 
 cBaseMetabolismDeltaE :: Setting Double
 cBaseMetabolismDeltaE = requiredSetting "baseMetabDeltaE"
 
-cEnergyCostPerClassifierModel :: Setting Double
-cEnergyCostPerClassifierModel
-  = requiredSetting "energyCostPerClassifierModel"
+cAdjustableMetabolismDeltaE :: Setting Double
+cAdjustableMetabolismDeltaE
+  = requiredSetting "adjustableMetabolismDeltaE"
 
 cChildCostFactor :: Setting Double
 cChildCostFactor = requiredSetting "childCostFactor"
@@ -343,12 +361,14 @@ config2Universe getSetting =
       _uStatsFile = workDir ++ "/statsFile",
       _uRawStatsFile = workDir ++ "/rawStatsFile",
       _uDataSource = mkDataSource dataFile readCounterFile,
+      _uShowClassifierModels = getSetting cShowClassifierModels,
       _uShowPredictorModels = getSetting cShowPredictorModels,
-      _uShowPredictions = getSetting cShowPredictions,
+      _uShowClassificationReport = getSetting cShowClassificationReport,
       _uShowScenarioReport = getSetting cShowScenarioReport,
-      _uShowResponseReport = getSetting cShowResponseReport,
-      _uShowDecisionReport = getSetting cShowDecisionReport,
-      _uGenFmris = getSetting cGenFmris,
+      _uShowPredictionReport = getSetting cShowPredictionReport,
+      _uShowActionReport = getSetting cShowActionReport,
+      _uShowReflectionReport = getSetting cShowReflectionReport,
+      _uShowImprintReport = getSetting cShowImprintReport,
       _uSleepBetweenTasks = getSetting cSleepBetweenTasks,
       _uVectorLength = n,
       _uClassifierSizeRange = getSetting cClassifierSizeRange,
@@ -357,14 +377,14 @@ config2Universe getSetting =
       _uMaturityRange = getSetting cMaturityRange,
       _uMaxAge = getSetting cMaxAge,
       _uInitialPopulationSize = p0,
-      _uEnergyBudget = fromIntegral p0 * 0.5,
+      _uInitialEnergy = e0,
       _uAllowedPopulationRange = (a', b'),
       _uPopControl = getSetting cPopControl,
-      _uAccuracyPower = getSetting cAccuracyPower,
-      _uAccuracyDeltaE = getSetting cAccuracyDeltaE,
+      _uMeanAccuracyDeltaE = getSetting cMeanAccuracyDeltaE,
+      _uMaxAccuracyDeltaE = getSetting cMaxAccuracyDeltaE,
       _uBaseMetabolismDeltaE = getSetting cBaseMetabolismDeltaE,
-      _uEnergyCostPerClassifierModel
-        = getSetting cEnergyCostPerClassifierModel,
+      _uAdjustableMetabolismDeltaE
+        = getSetting cAdjustableMetabolismDeltaE,
       _uChildCostFactor = getSetting cChildCostFactor,
       _uFlirtingFrequency = getSetting cFlirtingFrequency,
       _uPopControlDeltaE
@@ -386,14 +406,21 @@ config2Universe getSetting =
       _uCheckpoints = getSetting cCheckpoints,
       _uCurrVector = mkPersistent zeroes (workDir ++ "/currVector"),
       _uPrevVector = mkPersistent zeroes (workDir ++ "/prevVector"),
-      _uPreviousPredictions
-        = mkPersistent [] (workDir ++ "/prevPredictions"),
       _uNewPredictions = mkPersistent [] (workDir ++ "/newPredictions"),
-      _uMaxIndivError = mkPersistent 0 (workDir ++ "/maxIndivError"),
-      _uMinIndivError = mkPersistent 0 (workDir ++ "/minIndivError")
+      _uPrevPredictions
+        = mkPersistent [] (workDir ++ "/prevPredictions"),
+      _uMeanError = mkPersistent 0 (workDir ++ "/meanError"),
+      _uMinError = mkPersistent 0 (workDir ++ "/minError"),
+      _uPrevMetabMetrics
+        = mkPersistent [] (workDir ++ "/prevMetabMetrics"),
+      _uCurrMetabMetrics
+        = mkPersistent [] (workDir ++ "/currMetabMetrics"),
+      _uPrevMeanMetabMetric
+        = mkPersistent 1 (workDir ++ "/prevMeanMetabMetric")
     }
   where en = getSetting cExperimentName
         workDir = getSetting cWorkingDir
+        e0 = getSetting cInitialEnergy
         p0 = getSetting cInitialPopulationSize
         (a, b) = getSetting cAllowedPopulationRange
         a' = round (fromIntegral p0 * a)

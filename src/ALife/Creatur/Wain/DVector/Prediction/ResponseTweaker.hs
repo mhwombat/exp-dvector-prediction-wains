@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2012-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -16,15 +16,19 @@
 module ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
   (
     ResponseTweaker(..),
-    responseDiff,
-    makeResponseSimilar
+    diff,
+    adjust
+    -- responseDiff,
+    -- makeResponseSimilar
   ) where
 
 import qualified ALife.Creatur.Genetics.BRGCWord8 as W8
 import ALife.Creatur.Genetics.Diploid (Diploid)
 import ALife.Creatur.Wain.GeneticSOM (Difference, Tweaker(..))
 import ALife.Creatur.Wain.PlusMinusOne (adjustPM1Vector)
+import  ALife.Creatur.Wain.Pretty (Pretty)
 import ALife.Creatur.Wain.Response (Response(..), labelSimilarity)
+import ALife.Creatur.Wain.Statistics (Statistical(..), prefix)
 import ALife.Creatur.Wain.DVector.Prediction.Action (Action,
   actionDiff, makeActionSimilar)
 import ALife.Creatur.Wain.UnitInterval (UIDouble)
@@ -40,12 +44,16 @@ import GHC.Generics (Generic)
 --   reference the action type @a@. As a result, @ResponseTweaker@ has
 --   to have a type parameter @a@, even though it is not used.
 data ResponseTweaker = ResponseTweaker Weights
-  deriving (Eq, Show, Generic, NFData, Serialize, W8.Genetic, Diploid)
+  deriving (Eq, Show, Pretty, Generic, NFData, Serialize, W8.Genetic,
+            Diploid)
 
 instance Tweaker ResponseTweaker where
   type Pattern ResponseTweaker = Response Action
   diff (ResponseTweaker ws) = responseDiff ws
   adjust _ = makeResponseSimilar
+
+instance Statistical ResponseTweaker where
+  stats (ResponseTweaker ws) = map (prefix "tweaker weight") . stats $ ws
 
 -- | @'responseDiff' x y@ compares the response patterns
 --   @x@ and @y@, and returns a number between 0 and 1, representing

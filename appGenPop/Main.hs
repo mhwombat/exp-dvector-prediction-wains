@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
--- Module      :  ALife.Creatur.Wain.DVector.Prediction.GeneratePopulation
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Module      :  Main
+-- Copyright   :  (c) Amy de Buitléir 2012-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -10,6 +10,8 @@
 -- ???
 --
 ------------------------------------------------------------------------
+module Main where
+
 {-# LANGUAGE TypeFamilies #-}
 
 import ALife.Creatur (agentId)
@@ -21,7 +23,8 @@ import ALife.Creatur.Wain.PersistentStatistics (clearStats)
 import ALife.Creatur.Wain.Statistics (Statistic, stats, summarise)
 import ALife.Creatur.Wain.DVector.Prediction.Universe (Universe(..),
   writeToLog, store, loadUniverse, uClassifierSizeRange,
-  uPredictorSizeRange, uInitialPopulationSize, uStatsFile)
+  uPredictorSizeRange, uInitialPopulationSize, uInitialEnergy,
+  uStatsFile)
 import Control.Lens
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Random (evalRandIO)
@@ -39,9 +42,8 @@ introduceRandomAgent name = do
   agent
     <- liftIO . evalRandIO $
         randomPatternWain name u classifierSize predictorSize
-  -- Make the first generation a little hungry so they start learning
-  -- immediately.
-  let (agent', _) = adjustEnergy 0.8 agent
+  let e = view uInitialEnergy u
+  let (agent', _) = adjustEnergy e agent
   writeToLog $ "GeneratePopulation: Created " ++ agentId agent'
   writeToLog $ "GeneratePopulation: Stats " ++ pretty (stats agent')
   store agent'
@@ -55,7 +57,7 @@ introduceRandomAgents ns = do
   printStats yss
   statsFile <- use uStatsFile
   clearStats statsFile
-  
+
 main :: IO ()
 main = do
   u <- loadUniverse

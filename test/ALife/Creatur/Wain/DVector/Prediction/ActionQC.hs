@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.ActionQC
--- Copyright   :  (c) Amy de Buitléir 2017
+-- Copyright   :  (c) Amy de Buitléir 2013-2018
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -20,9 +20,6 @@ import ALife.Creatur.Wain.TestUtils (prop_serialize_round_trippable,
   prop_genetic_round_trippable, prop_diploid_identity)
 import ALife.Creatur.Wain.DVector.Prediction.Action
 import ALife.Creatur.Wain.DVector.Double (minDouble, maxDouble)
--- import ALife.Creatur.Wain.DVector.Prediction.TestUtils
---   (prop_serialize_round_trippable, prop_genetic_round_trippable,
---     prop_diploid_identity)
 import Test.Framework (Test, testGroup)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.QuickCheck
