@@ -58,11 +58,9 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     uChildCostFactor,
     uFlirtingFrequency,
     uPopControlDeltaE,
-    uClassifierThresholdRange,
     uClassifierR0Range,
     uClassifierRfRange,
     uClassifierTfRange,
-    uPredictorThresholdRange,
     uPredictorR0Range,
     uPredictorRfRange,
     uPredictorTfRange,
@@ -153,11 +151,9 @@ data Universe a = Universe
     _uChildCostFactor :: Double,
     _uFlirtingFrequency :: UIDouble,
     _uPopControlDeltaE :: Persistent Double,
-    _uClassifierThresholdRange :: (UIDouble, UIDouble),
     _uClassifierR0Range :: (UIDouble, UIDouble),
     _uClassifierRfRange :: (UIDouble, UIDouble),
     _uClassifierTfRange :: (Word64, Word64),
-    _uPredictorThresholdRange :: (UIDouble, UIDouble),
     _uPredictorR0Range :: (UIDouble, UIDouble),
     _uPredictorRfRange :: (UIDouble, UIDouble),
     _uPredictorTfRange :: (Word64, Word64),
@@ -292,9 +288,6 @@ cChildCostFactor = requiredSetting "childCostFactor"
 cFlirtingFrequency :: Setting UIDouble
 cFlirtingFrequency = requiredSetting "flirtingFrequency"
 
-cClassifierThresholdRange :: Setting (UIDouble, UIDouble)
-cClassifierThresholdRange = requiredSetting "classifierThresholdRange"
-
 cClassifierR0Range :: Setting (UIDouble, UIDouble)
 cClassifierR0Range = requiredSetting "classifierR0Range"
 
@@ -303,9 +296,6 @@ cClassifierRfRange = requiredSetting "classifierRfRange"
 
 cClassifierTfRange :: Setting (Word64, Word64)
 cClassifierTfRange = requiredSetting "classifierTfRange"
-
-cPredictorThresholdRange :: Setting (UIDouble, UIDouble)
-cPredictorThresholdRange = requiredSetting "predictorThresholdRange"
 
 cPredictorR0Range :: Setting (UIDouble, UIDouble)
 cPredictorR0Range = requiredSetting "predictorR0Range"
@@ -389,11 +379,9 @@ config2Universe getSetting =
       _uFlirtingFrequency = getSetting cFlirtingFrequency,
       _uPopControlDeltaE
         = mkPersistent 0 (workDir ++ "/popControlDeltaE"),
-      _uClassifierThresholdRange = getSetting cClassifierThresholdRange,
       _uClassifierR0Range = getSetting cClassifierR0Range,
       _uClassifierRfRange = getSetting cClassifierRfRange,
       _uClassifierTfRange = getSetting cClassifierTfRange,
-      _uPredictorThresholdRange = getSetting cPredictorThresholdRange,
       _uPredictorR0Range = getSetting cPredictorR0Range,
       _uPredictorRfRange = getSetting cPredictorRfRange,
       _uPredictorTfRange = getSetting cPredictorTfRange,

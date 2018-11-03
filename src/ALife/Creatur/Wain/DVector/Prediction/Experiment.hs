@@ -94,18 +94,15 @@ randomPatternWain wName u classifierSize predictorSize = do
                 _rfRange = view U.uClassifierRfRange u,
                 _tfRange = view U.uClassifierTfRange u }
   fc <- randomLearningParams fcp
-  classifierThreshold <- getRandomR (view U.uClassifierThresholdRange u)
   ws <- (makeWeights . take (2*k)) <$> getRandoms
-  let c = Cl.buildClassifier fc classifierSize classifierThreshold
-            (PatternTweaker ws)
+  let c = Cl.buildClassifier fc classifierSize (PatternTweaker ws)
   let fdp = LearningParamRanges
               { _r0Range = view U.uPredictorR0Range u,
                 _rfRange = view U.uPredictorRfRange u,
                 _tfRange = view U.uPredictorTfRange u }
   fd <- randomLearningParams fdp
-  predictorThreshold <- getRandomR (view U.uPredictorThresholdRange u)
   rtw <- (ResponseTweaker . makeWeights . take 2) <$> getRandoms
-  let p = P.buildPredictor fd predictorSize predictorThreshold rtw
+  let p = P.buildPredictor fd predictorSize rtw
   hw <- (makeWeights . take 4) <$> getRandomRs unitInterval
   t <- getRandom
   s <- getRandomR (view U.uStrictnessRange u)

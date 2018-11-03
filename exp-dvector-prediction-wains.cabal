@@ -2,10 +2,10 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f9e8569ff0540ad7916fca7bcb94fcdd84a747f27676e57f2a704a71c352f661
+-- hash: e41cece88551bcd8568bd33d92f0d6e8f1da5530b8713813b94d3625980ac5a5
 
 name:           exp-dvector-prediction-wains
-version:        1.0.8
+version:        1.0.9
 description:    Please see the README on GitHub at <https://github.com/mhwombat/exp-dvector-prediction-wains#readme>
 homepage:       https://github.com/mhwombat/exp-dvector-prediction-wains#readme
 bug-reports:    https://github.com/mhwombat/exp-dvector-prediction-wains/issues

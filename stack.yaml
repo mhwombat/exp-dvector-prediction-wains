@@ -44,13 +44,13 @@ extra-deps:
 - gray-extended-1.5.2
 - grid-7.8.9
 - numeric-tools-0.2.0.1
-- som-10.0.1
+- som-10.1.0
 - git: git@github.com:mhwombat/creatur-wains.git
-  commit: 5e18513682976564cd13a07a642ac8dd5c498068
+  commit: 890f00f2c4c5fe096522185e3ac7d147e6feab91
 - git: https://github.com/mhwombat/creatur-wains-test-utils.git
-  commit: 4c4eabec150c1fa3a6192a6077fa34ed28422c81
+  commit: 6e4dd20fa60c1aa58d546d1ab34d929983768497
 - git: git@github.com:mhwombat/creatur-dvector-wains.git
-  commit: 884850583dbb3f4a69201e4f2347ca835fb476b1
+  commit: cb1f7c5ace93856614735e5a82f01ea8885bdb66
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
