@@ -1,0 +1,17 @@
+# Build artifacts
+.stack-work
+result
+dist
+dist-newstyle
+.ghc.environment*
+
+# Backup files
+*~
+
+# Stuff that I'm not ready to publish
+notes
+unpublished
+ispd
+DLVolume_CQ991F_CQ9911L_0
+trig3
+trimUniverse

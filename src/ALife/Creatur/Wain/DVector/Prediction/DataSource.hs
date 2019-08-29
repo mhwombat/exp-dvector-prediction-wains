@@ -12,21 +12,29 @@
 ------------------------------------------------------------------------
 module ALife.Creatur.Wain.DVector.Prediction.DataSource where
 
-import ALife.Creatur.Persistent (Persistent, mkPersistent, getPS, putPS)
-import ALife.Creatur.Util (modifyLift, stateMap)
-import Control.Monad (unless)
-import Control.Monad.IO.Class (liftIO)
-import Control.Monad.State.Lazy (StateT, get, gets)
-import Data.List.Split (splitOn)
-import System.IO (Handle, hGetLine, hIsEOF, IOMode(ReadMode), openFile)
-import Text.Read (readEither)
+import           ALife.Creatur.Persistent
+    (Persistent, getPS, mkPersistent, putPS)
+import           ALife.Creatur.Util
+    (modifyLift, stateMap)
+import           Control.Monad
+    (unless)
+import           Control.Monad.IO.Class
+    (liftIO)
+import           Control.Monad.State.Lazy
+    (StateT, get, gets)
+import           Data.List.Split
+    (splitOn)
+import           System.IO
+    (Handle, IOMode (ReadMode), hGetLine, hIsEOF, openFile)
+import           Text.Read
+    (readEither)
 
 data DataSource = DataSource
   {
     initialised :: Bool,
     currentTime :: Persistent Int,
-    fileHandle :: Handle,
-    fileName :: FilePath
+    fileHandle  :: Handle,
+    fileName    :: FilePath
   }
 
 instance Show DataSource where

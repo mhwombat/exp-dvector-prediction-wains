@@ -10,10 +10,13 @@
 -- Runs the QuickCheck tests.
 --
 ------------------------------------------------------------------------
-import ALife.Creatur.Wain.DVector.Prediction.ActionQC (test)
-import ALife.Creatur.Wain.DVector.Prediction.ExperimentQC (test)
+import           ALife.Creatur.Wain.DVector.Prediction.ActionQC
+    (test)
+import           ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
+    (test)
 
-import Test.Framework as TF (defaultMain, Test)
+import           Test.Framework                                     as TF
+    (Test, defaultMain)
 
 tests :: [TF.Test]
 tests =

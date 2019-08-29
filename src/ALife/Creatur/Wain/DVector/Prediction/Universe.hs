@@ -10,12 +10,12 @@
 -- Universe for image mining agents
 --
 ------------------------------------------------------------------------
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE Rank2Types          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE TypeFamilies        #-}
 module ALife.Creatur.Wain.DVector.Prediction.Universe
   (
     -- * Constructors
@@ -90,29 +90,39 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     U.writeToLog
   ) where
 
-import qualified ALife.Creatur as A
-import qualified ALife.Creatur.Namer as N
-import qualified ALife.Creatur.Checklist as CL
-import qualified ALife.Creatur.Counter as K
-import qualified ALife.Creatur.Database as D
-import qualified ALife.Creatur.Database.CachedFileSystem as CFS
-import qualified ALife.Creatur.Logger.SimpleLogger as SL
-import ALife.Creatur (AgentId)
-import ALife.Creatur.Persistent (Persistent, mkPersistent)
-import qualified ALife.Creatur.Universe as U
-import qualified ALife.Creatur.Wain.Checkpoint as CP
-import ALife.Creatur.Wain.DVector.Prediction.Action (Action)
-import ALife.Creatur.Wain.DVector.Prediction.DataSource (DataSource,
-  mkDataSource)
-import ALife.Creatur.Wain.Response (Response)
-import ALife.Creatur.Wain.PlusMinusOne (PM1Double)
-import ALife.Creatur.Wain.UnitInterval (UIDouble)
-import Control.Exception (SomeException, try)
-import Control.Lens hiding (Setting)
-import Data.AppSettings (Setting(..), GetSetting(..),
-  FileLocation(Path), readSettings)
-import Data.Word (Word8, Word16, Word64)
-import System.Directory (makeRelativeToCurrentDirectory)
+import           ALife.Creatur
+    (AgentId)
+import qualified ALife.Creatur                                    as A
+import qualified ALife.Creatur.Checklist                          as CL
+import qualified ALife.Creatur.Counter                            as K
+import qualified ALife.Creatur.Database                           as D
+import qualified ALife.Creatur.Database.CachedFileSystem          as CFS
+import qualified ALife.Creatur.Logger.SimpleLogger                as SL
+import qualified ALife.Creatur.Namer                              as N
+import           ALife.Creatur.Persistent
+    (Persistent, mkPersistent)
+import qualified ALife.Creatur.Universe                           as U
+import qualified ALife.Creatur.Wain.Checkpoint                    as CP
+import           ALife.Creatur.Wain.DVector.Prediction.Action
+    (Action)
+import           ALife.Creatur.Wain.DVector.Prediction.DataSource
+    (DataSource, mkDataSource)
+import           ALife.Creatur.Wain.PlusMinusOne
+    (PM1Double)
+import           ALife.Creatur.Wain.Response
+    (Response)
+import           ALife.Creatur.Wain.UnitInterval
+    (UIDouble)
+import           Control.Exception
+    (SomeException, try)
+import           Control.Lens                                     hiding
+    (Setting)
+import           Data.AppSettings
+    (FileLocation (Path), GetSetting (..), Setting (..), readSettings)
+import           Data.Word
+    (Word16, Word64, Word8)
+import           System.Directory
+    (makeRelativeToCurrentDirectory)
 
 data Universe a = Universe
   {

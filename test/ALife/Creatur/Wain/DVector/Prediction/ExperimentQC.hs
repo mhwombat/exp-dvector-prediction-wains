@@ -16,7 +16,8 @@ module ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
   ) where
 
 -- import ALife.Creatur.Wain.DVector.Prediction.Experiment
-import Test.Framework (Test, testGroup)
+import           Test.Framework
+    (Test, testGroup)
 -- import Test.Framework.Providers.QuickCheck2 (testProperty)
 -- import Test.QuickCheck
 

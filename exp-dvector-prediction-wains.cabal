@@ -1,11 +1,5 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
---
--- see: https://github.com/sol/hpack
---
--- hash: e41cece88551bcd8568bd33d92f0d6e8f1da5530b8713813b94d3625980ac5a5
-
 name:           exp-dvector-prediction-wains
-version:        1.0.9
+version:        1.0.11
 description:    Please see the README on GitHub at <https://github.com/mhwombat/exp-dvector-prediction-wains#readme>
 homepage:       https://github.com/mhwombat/exp-dvector-prediction-wains#readme
 bug-reports:    https://github.com/mhwombat/exp-dvector-prediction-wains/issues
@@ -27,9 +21,11 @@ source-repository head
 library
   exposed-modules:
       ALife.Creatur.Wain.DVector.Prediction.Action
+      ALife.Creatur.Wain.DVector.Prediction.ActionInternal
       ALife.Creatur.Wain.DVector.Prediction.DataSource
       ALife.Creatur.Wain.DVector.Prediction.Experiment
       ALife.Creatur.Wain.DVector.Prediction.Muser
+      ALife.Creatur.Wain.DVector.Prediction.MuserInternal
       ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
       ALife.Creatur.Wain.DVector.Prediction.Universe
   other-modules:
@@ -45,8 +41,8 @@ library
     , cond
     , containers
     , creatur
-    , creatur-dvector-wains
-    , creatur-wains
+    , creatur-dvector-wains >= 1.1.3 && < 1.2
+    , creatur-wains == 9.6.*
     , deepseq
     , directory
     , filepath
@@ -152,6 +148,7 @@ test-suite exp-dvector-prediction-wains-test
   other-modules:
       ALife.Creatur.Wain.DVector.Prediction.ActionQC
       ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
+      ALife.Creatur.Wain.DVector.Prediction.MuserQC
       ALife.Creatur.Wain.DVector.Prediction.ResponseTweakerQC
       Paths_exp_dvector_prediction_wains
   hs-source-dirs:
@@ -163,7 +160,10 @@ test-suite exp-dvector-prediction-wains-test
     , creatur-dvector-wains
     , creatur-wains
     , creatur-wains-test-utils
+    , deepseq
     , exp-dvector-prediction-wains
+    , lens
+    , numeric-tools
     , test-framework
     , test-framework-quickcheck2
   default-language: Haskell2010
