@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.Experiment
--- Copyright   :  (c) Amy de Buitléir 2012-2018
+-- Copyright   :  (c) 2012-2021 Amy de Buitléir
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
@@ -81,8 +81,7 @@ import           Control.Monad.Random
     getRandoms)
 import           Control.Monad.State.Lazy
     (StateT, execStateT, get, put)
-import           Data.List
-    (intercalate, lookup)
+import           Data.List                                            (intercalate)
 import           Data.Version
     (showVersion)
 import           Data.Word                                             (Word64)
@@ -616,8 +615,9 @@ printStats = mapM_ f
                  "Summary - " ++ intercalate "," (map pretty xs)
 
 adjustWainEnergy
-  :: Simple Lens Experiment PatternWain -> Double
-    -> Simple Lens Summary Double -> String -> StateT Experiment IO ()
+  :: Lens Experiment Experiment PatternWain PatternWain -> Double
+    -> Lens Summary Summary Double Double -> String
+    -> StateT Experiment IO ()
 adjustWainEnergy
     wainSelector deltaE statLens reason = do
   w <- use wainSelector

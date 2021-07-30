@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Wain.DVector.Prediction.ResponseTweakerQC
--- Copyright   :  (c) Amy de Buitléir 2013-2018
+-- Copyright   :  (c) 2013-2021 Amy de Buitléir
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental

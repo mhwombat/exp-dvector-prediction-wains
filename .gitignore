@@ -1,16 +1,33 @@
-# Build artifacts
-.ghc.environment*
-.stack-work
-cabal.project.local
-dist
-dist-newstyle
-result
-
-# Backup files
+# misc
+*.lock
 *~
 
-# Stuff that I'm not ready to publish
-ispd
-DLVolume_CQ991F_CQ9911L_0
-trig3
-trimUniverse
+# nix
+result
+result-*
+
+# haskell
+dist
+dist-newstyle
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+cabal.project.local
+.HTF/
+.ghc.environment.*
+
+# Not ready to publish
+unpublished
