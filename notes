@@ -1,178 +1,84 @@
+nix-shell
+cabal repl
 :l ALife.Creatur.Wain.DVector.Prediction.Experiment
 import ALife.Creatur.Wain.DVector.Prediction.Experiment
 import ALife.Creatur.Wain.ExamineAgent (fetchObjects, examine)
 import ALife.Creatur.Wain.DVector.Prediction.ActionInternal
-w:_ <- fetchObjects "/home/amy/alife/dvector-trig3/db/archive/dvector-trig3_48623" :: IO [PatternWain]
+w:_ <- fetchObjects "/home/amy/alife/dvector-trig3/db/archive/dvector-trig3_47010" :: IO [PatternWain]
+pretty (customStats w)
 
-a = Add (-0.7694208842938138)
+a = Add 0.293892626146237
 The correct action would have been Add (-0.7694208842938138)
 let (rImprint, w'') = W.imprintResponse [0] a w
 
-190411205752+0100       5003    ---------- dvector-trig3_48623's turn ----------
-190411205752+0100       5003    At beginning of turn, dvector-trig3_48623's summary: age=94,classifier num models=6,classifier max. size=33,classifier SQ=5,classifier r0=0.273,classifier rf
-=0.000,classifier tf=2119,classifier counter[0]=1,classifier counter[1]=8,classifier counter[2]=8,classifier counter[3]=9,classifier counter[4]=9,classifier counter[5]=9,classifier tweaker 
-weight[1]=0.686,classifier tweaker weight[2]=0.314,depth=2,width=0.497,default energy outcome=0.048,default passion outcome=0.072,default boredom outcome=-0.127,default litterSize outcome=-
-0.296,predictor num models=6,predictor max. size=63,predictor SQ=5,predictor r0=0.200,predictor rf=0.000,predictor tf=1335,predictor counter[0]=26,predictor counter[1]=28,predictor counter[
-2]=28,predictor counter[3]=27,predictor counter[4]=26,predictor counter[5]=1,predictor tweaker weight[1]=0.467,predictor tweaker weight[2]=0.533,DQ=3,energyWeight=0.255,passionWeight=0.352,
-boredomWeight=0.191,litterSizeWeight=0.203,energyImprint=0.775,passionImprint=0.629,boredomImprint=0.905,litterSizeImprint=0.578,energyReinforcement=0.054,passionReinforcement=0.024,boredom
-Reinforcement=0.090,litterSizeReinforcement=0.048,tiebreaker=89,strictness=34,devotion=0.080,maturity=50,Δp=0.000,Δb=0.000,energy=0.016,passion=0.000,boredom=1.000,happiness=0.557,current l
-itter size=1,children borne (lifetime)=1,children reared (lifetime)=0,adult energy=0.011,child energy=0.005,genome length=1230,predictorActionWeight=0.467,predictorScenarioWeight=0.533
-190411205752+0100       5003    Adjusting energy of dvector-trig3_48623 because prediction: 1.104212702381106e-2 0.11 -> 0.12104212702381106 used=0.11 leftover=0.0
-190411205752+0100       5003    dvector-trig3_48623 predicted=0.206107373853763, actual=2.44717418524232e-2, error e=0.18163563200133978, meanDeltaE=0.1, maxDeltaE=0.11, meanError =0.294968
-59348086407, minError=0.18163563200133978, deltaE=0.11
-190411205752+0100       5003    The action taken was Add (-0.587785252292474)
-190411205752+0100       5003    --- begin reflection report
-190411205752+0100       5003    dvector-trig3_48623 reflects on the outcome
-190411205752+0100       5003    err=0.005
-190411205752+0100       5003    predictor learning rate: 0.106
-190411205752+0100       5003    Imprinted new response model: 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000
-190411205752+0100       5003    predictor BMU: 6 difference: 0.000 novelty: 0
-190411205752+0100       5003    learning details (label, model, diff):
-190411205752+0100       5003    0 2|Add (-0.587785252292474)|0.386|0.235|0.384|0.247 0.533
-190411205752+0100       5003    1 3|Add (-0.18163563200134003)|0.351|0.204|0.340|0.217 0.533
-190411205752+0100       5003    2 4|Add 0.4755282581475768|0.354|0.206|0.343|0.220 0.533
-190411205752+0100       5003    3 5|Add 0.4755282581475768|0.351|0.206|0.337|0.217 0.533
-190411205752+0100       5003    4 1|Add (-0.18163563200134003)|0.383|0.233|0.380|0.244 0.533
-190411205752+0100       5003    5 5|Add 0.293892626146237|0.775|0.629|0.905|0.578 0.533
-190411205752+0100       5003    6 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000 0.000
-190411205752+0100       5003    dvector-trig3_49360 imprints a response
-190411205752+0100       5003    predictor learning rate: 0.229
-190411205752+0100       5003    Imprinted new response model: 0|Add (-0.587785252292474)|0.775|0.629|0.905|0.578
-190411205752+0100       5003    predictor BMU: 5 difference: 0.000 novelty: 0
-190411205752+0100       5003    learning details (label, model, diff):
-190411205752+0100       5003    0 2|Add (-0.587785252292474)|0.812|0.646|0.955|0.641 0.485
-190411205752+0100       5003    1 3|Add (-0.18163563200134003)|0.812|0.646|0.955|0.641 0.485
-190411205752+0100       5003    2 4|Add 0.4755282581475768|0.812|0.646|0.955|0.641 0.485
-190411205752+0100       5003    3 5|Add 0.4755282581475768|0.812|0.646|0.955|0.641 0.485
-190411205752+0100       5003    4 1|Add (-0.18163563200134003)|0.799|0.640|0.942|0.620 0.485
-190411205752+0100       5003    5 0|Add (-0.587785252292474)|0.775|0.629|0.905|0.578 0.000
-190411205752+0100       5003    --- end reflection report
-190411205752+0100       5003    The correct action would have been Add (-0.7694208842938138)
-190411205752+0100       5003    --- begin imprint report
-190411205752+0100       5003    dvector-trig3_48623 imprints a response
-190411205752+0100       5003    predictor learning rate: 0.105
-190411205752+0100       5003    Imprinted new response model: 0|Add (-0.7694208842938138)|0.775|0.629|0.905|0.578
-190411205752+0100       5003    predictor BMU: 7 difference: 0.000 novelty: 0
-190411205752+0100       5003    learning details (label, model, diff):
-190411205752+0100       5003    0 2|Add (-0.587785252292474)|0.386|0.235|0.384|0.247 0.533
-190411205752+0100       5003    1 3|Add (-0.18163563200134003)|0.351|0.204|0.340|0.217 0.533
-190411205752+0100       5003    2 4|Add 0.4755282581475768|0.354|0.206|0.343|0.220 0.533
-190411205752+0100       5003    3 5|Add 0.4755282581475768|0.351|0.206|0.337|0.217 0.533
-190411205752+0100       5003    4 1|Add (-0.18163563200134003)|0.383|0.233|0.380|0.244 0.533
-190411205752+0100       5003    5 5|Add 0.293892626146237|0.775|0.629|0.905|0.578 0.533
-190411205752+0100       5003    6 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000 0.000
-190411205752+0100       5003    7 0|Add (-0.7694208842938138)|0.775|0.629|0.905|0.578 0.000
-190411205752+0100       5003    --- end imprint report
-190411205752+0100       5003    Adjusting energy of dvector-trig3_48623 because metabolism: 0.12104212702381106 -0.10039613225202744 -> 2.0645994771783624e-2 used=-0.10039613225202744 leftover=0.0
-190411205752+0100       5003    Adjusting energy of dvector-trig3_48623 because pop control: 2.0645994771783624e-2 -2.441899555928357e-4 -> 2.0401804816190788e-2 used=-2.441899555928363e-4 leftover=5.963111948670274e-19
-190411205752+0100       5003    --- begin classifier models
-190411205752+0100       5003    dvector-trig3_48623's classifier model 0 0.794,0.294
-190411205752+0100       5003    dvector-trig3_48623's classifier model 1 0.976,0.476
-190411205752+0100       5003    dvector-trig3_48623's classifier model 2 0.794,0.182
-190411205752+0100       5003    dvector-trig3_48623's classifier model 3 0.206,0.588
-190411205752+0100       5003    dvector-trig3_48623's classifier model 4 0.024,0.182
-190411205752+0100       5003    dvector-trig3_48623's classifier model 5 0.500,0.476
-190411205752+0100       5003    --- end classifier models
-190411205752+0100       5003    --- begin predictor models
-190411205752+0100       5003    dvector-trig3_48623's predictor model 0: 2|Add (-0.587785252292474)|0.386|0.235|0.384|0.247
-190411205752+0100       5003    dvector-trig3_48623's predictor model 1: 3|Add (-0.18163563200134003)|0.351|0.204|0.340|0.217
-190411205752+0100       5003    dvector-trig3_48623's predictor model 2: 4|Add 0.4755282581475768|0.354|0.206|0.343|0.220
-190411205752+0100       5003    dvector-trig3_48623's predictor model 3: 5|Add 0.4755282581475768|0.351|0.206|0.337|0.217
-190411205752+0100       5003    dvector-trig3_48623's predictor model 4: 1|Add (-0.18163563200134003)|0.383|0.233|0.380|0.244
-190411205752+0100       5003    dvector-trig3_48623's predictor model 5: 5|Add 0.293892626146237|0.775|0.629|0.905|0.578
-190411205752+0100       5003    dvector-trig3_48623's predictor model 6: 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000
-190411205752+0100       5003    dvector-trig3_48623's predictor model 7: 0|Add (-0.7694208842938138)|0.775|0.629|0.905|0.578
-190411205752+0100       5003    --- end predictor models
-190411205752+0100       5003    WARNING: Unhandled exception: label already exists
+210730190059+0100       5003    ---------- dvector-trig3_47010's turn ----------
+210730190059+0100       5003    At beginning of turn, dvector-trig3_47010's summary: age=262,classifier num models=6,classifier max. size=45,classifier SQ=5,classifier r0=0.697,classifier rf=0.001,classifier tf=1271,classifier counter[0]=1,classifier counter[1]=40,classifier counter[2]=40,classifier counter[3]=40,classifier counter[4]=40,classifier counter[5]=40,classifier tweaker weight[1]=0.479,classifier tweaker weight[2]=0.521,depth=2,width=0.581,default energy outcome=-0.189,default passion outcome=0.813,default boredom outcome=-0.339,default litterSize outcome=-0.762,predictor num models=6,predictor max. size=94,predictor SQ=5,predictor r0=0.172,predictor rf=0.001,predictor tf=1826,predictor counter[0]=93,predictor counter[1]=91,predictor counter[2]=92,predictor counter[3]=92,predictor counter[4]=92,predictor counter[5]=1,predictor tweaker weight[1]=0.028,predictor tweaker weight[2]=0.972,DQ=3,energyWeight=0.390,passionWeight=0.396,boredomWeight=0.176,litterSizeWeight=0.038,energyImprint=0.457,passionImprint=0.831,boredomImprint=0.170,litterSizeImprint=0.411,energyReinforcement=0.046,passionReinforcement=0.060,boredomReinforcement=0.075,litterSizeReinforcement=0.042,tiebreaker=129,strictness=29,devotion=0.066,maturity=61,Δp=0.000,Δb=0.000,energy=0.012,passion=0.000,boredom=1.000,happiness=0.401,current litter size=0,children borne (lifetime)=2,children reared (lifetime)=2,adult energy=0.012,child energy=0.000,genome length=1230,predictorActionWeight=0.028,predictorScenarioWeight=0.972
+210730190059+0100       5003    Adjusting energy of dvector-trig3_47010 because prediction: 1.2247436548451998e-2 5.585044759970274e-2 -> 6.809788414815474e-2 used=5.5850447599702736e-2 leftover=6.938893903907228e-18
+210730190059+0100       5003    dvector-trig3_47010 predicted=1.087785252292474, actual=2.44717418524232e-2, error e=1.0633135104400508, meanDeltaE=0.1, maxDeltaE=0.11, meanError =0.24518614781479545, minError=5.987795823057975e-2, deltaE=5.585044759970274e-2
+210730190059+0100       5003    The action taken was Add 0.293892626146237
+210730190059+0100       5003    --- begin reflection report
+210730190059+0100       5003    dvector-trig3_47010 reflects on the outcome
+210730190059+0100       5003    err=0.027
+210730190059+0100       5003    predictor learning rate: 0.047
+210730190059+0100       5003    Imprinted new response model: 0|Add 0.293892626146237|0.056|0.000|0.000|0.000
+210730190059+0100       5003    predictor BMU: 6 difference: 0.000 novelty: 0
+210730190059+0100       5003    learning details (label, model, diff):
+210730190059+0100       5003    0 4|Add 0.4755282581475768|0.157|0.084|0.081|0.054 0.972
+210730190059+0100       5003    1 5|Add 0.4755282581475768|0.155|0.081|0.077|0.052 0.972
+210730190059+0100       5003    2 1|Add (-0.18163563200134003)|0.156|0.082|0.080|0.053 0.972
+210730190059+0100       5003    3 2|Add (-0.587785252292474)|0.157|0.082|0.080|0.053 0.972
+210730190059+0100       5003    4 3|Add (-0.18163563200134003)|0.157|0.083|0.080|0.053 0.972
+210730190059+0100       5003    5 5|Add 0.293892626146237|0.457|0.831|0.170|0.411 0.972
+210730190059+0100       5003    6 0|Add 0.293892626146237|0.056|0.000|0.000|0.000 0.000
+210730190059+0100       5003    --- end reflection report
+210730190059+0100       5003    The correct action would have been Add (-0.7694208842938138)
+210730190059+0100       5003    --- begin imprint report
+210730190059+0100       5003    dvector-trig3_47010 imprints a response
+210730190059+0100       5003    predictor learning rate: 0.046
+210730190059+0100       5003    Imprinted new response model: 0|Add (-0.7694208842938138)|0.457|0.831|0.170|0.411
+210730190059+0100       5003    predictor BMU: 7 difference: 0.000 novelty: 0
+210730190059+0100       5003    learning details (label, model, diff):
+210730190059+0100       5003    0 4|Add 0.4755282581475768|0.157|0.084|0.081|0.054 0.972
+210730190059+0100       5003    1 5|Add 0.4755282581475768|0.155|0.081|0.077|0.052 0.972
+210730190059+0100       5003    2 1|Add (-0.18163563200134003)|0.156|0.082|0.080|0.053 0.972
+210730190059+0100       5003    3 2|Add (-0.587785252292474)|0.157|0.082|0.080|0.053 0.972
+210730190059+0100       5003    4 3|Add (-0.18163563200134003)|0.157|0.083|0.080|0.053 0.972
+210730190059+0100       5003    5 5|Add 0.293892626146237|0.457|0.831|0.170|0.411 0.972
+210730190059+0100       5003    6 0|Add 0.293892626146237|0.056|0.000|0.000|0.000 0.000
+210730190059+0100       5003    7 0|Add (-0.7694208842938138)|0.457|0.831|0.170|0.411 0.000
+210730190059+0100       5003    --- end imprint report
+210730190059+0100       5003    Adjusting energy of dvector-trig3_47010 because metabolism: 6.809788414815474e-2 -9.94255791812123e-2 -> 0.0 used=-6.809788414815474e-2 leftover=-3.132769503305756e-2
+210730190059+0100       5003    Adjusting energy of dvector-trig3_47010 because pop control: 0.0 -2.8509581211812396e-4 -> 0.0 used=0.0 leftover=-2.8509581211812396e-4
+210730190059+0100       5003    --- begin classifier models
+210730190059+0100       5003    dvector-trig3_47010's classifier models
+210730190059+0100       5003    0 0.794,0.294
+210730190059+0100       5003    1 0.976,0.476
+210730190059+0100       5003    2 0.794,0.182
+210730190059+0100       5003    3 0.206,0.588
+210730190059+0100       5003    4 0.024,0.182
+210730190059+0100       5003    5 0.500,0.476
+210730190059+0100       5003    --- end classifier models
+210730190059+0100       5003    --- begin predictor models
+210730190059+0100       5003    dvector-trig3_47010's predictor models
+210730190059+0100       5003    0: 4|Add 0.4755282581475768|0.157|0.084|0.081|0.054
+210730190059+0100       5003    1: 5|Add 0.4755282581475768|0.155|0.081|0.077|0.052
+210730190059+0100       5003    2: 1|Add (-0.18163563200134003)|0.156|0.082|0.080|0.053
+210730190059+0100       5003    3: 2|Add (-0.587785252292474)|0.157|0.082|0.080|0.053
+210730190059+0100       5003    4: 3|Add (-0.18163563200134003)|0.157|0.083|0.080|0.053
+210730190059+0100       5003    5: 5|Add 0.293892626146237|0.457|0.831|0.170|0.411
+210730190059+0100       5003    6: 0|Add 0.293892626146237|0.056|0.000|0.000|0.000
+210730190059+0100       5003    7: 0|Add (-0.7694208842938138)|0.457|0.831|0.170|0.411
+210730190059+0100       5003    --- end predictor models
+210730190059+0100       5003    WARNING: Unhandled exception: label already exists
 CallStack (from HasCallStack):
-  error, called at src/Data/Datamining/Clustering/SGM4Internal.hs:146:22 in som-10.1.11-7v37yoRXFSEFYQ7ZzI0ijq:Data.Datamining.Clustering.SGM4Internal
-190411205752+0100       5003    WARNING: Call stack: 
-190411205752+0100       5003    dvector-trig3_48623 archived and removed from lineup
-
-
-
-
-190317232539+0000       5003    ---------- dvector-trig3_46816's turn ----------
-190317232539+0000       5003    At beginning of turn, dvector-trig3_46816's summary: age=282,classifier num models=6,classifier max. size=39,classifier SQ=5,classifier r0=0.660,classifier rf=0.001,classifier tf=1301,classifier counter[0]=1,classifier co
-unter[1]=43,classifier counter[2]=43,classifier counter[3]=43,classifier counter[4]=44,classifier counter[5]=44,classifier tweaker weight[1]=0.708,classifier tweaker weight[2]=0.292,depth=3,width=0.105,default energy outcome=-0.048,default passion outco
-me=0.052,default boredom outcome=-0.373,default litterSize outcome=-0.555,predictor num models=6,predictor max. size=29,predictor SQ=5,predictor r0=0.167,predictor rf=0.000,predictor tf=1294,predictor counter[0]=101,predictor counter[1]=100,predictor co
-unter[2]=99,predictor counter[3]=99,predictor counter[4]=98,predictor counter[5]=1,predictor tweaker weight[1]=0.223,predictor tweaker weight[2]=0.777,DQ=3,energyWeight=0.162,passionWeight=0.278,boredomWeight=0.345,litterSizeWeight=0.216,energyImprint=0
-.774,passionImprint=0.674,boredomImprint=0.733,litterSizeImprint=0.672,energyReinforcement=0.052,passionReinforcement=0.033,boredomReinforcement=0.050,litterSizeReinforcement=0.042,tiebreaker=8,strictness=36,devotion=0.147,maturity=64,Δp=0.000,Δb=0.000,
-energy=0.013,passion=0.000,boredom=1.000,happiness=0.495,current litter size=1,children borne (lifetime)=2,children reared (lifetime)=1,adult energy=0.008,child energy=0.006,genome length=1230,predictorActionWeight=0.223,predictorScenarioWeight=0.777
-190317232539+0000       5003    Adjusting energy of dvector-trig3_46816 because prediction: 7.603234668326159e-3 0.11 -> 0.11760323466832616 used=0.11 leftover=0.0
-190317232539+0000       5003    dvector-trig3_46816 predicted=0.206107373853763, actual=2.44717418524232e-2, error e=0.18163563200133978, meanDeltaE=0.1, maxDeltaE=0.11, meanError =0.3711144854920596, minError=0.18163563200133978, deltaE=0.11
-190317232539+0000       5003    The action taken was Add (-0.587785252292474)
-190317232539+0000       5003    --- begin reflection report
-190317232539+0000       5003    dvector-trig3_46816 reflects on the outcome
-190317232539+0000       5003    err=0.077
-190317232539+0000       5003    predictor learning rate: 0.016
-190317232539+0000       5003    Imprinted new response model: 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000
-190317232539+0000       5003    predictor BMU: 6 difference: 0.000 novelty: 0
-190317232539+0000       5003    learning details (label, model, diff):
-190317232539+0000       5003    0 4|Add 0.47552825814757704|0.214|0.094|0.117|0.103 0.777
-190317232539+0000       5003    1 5|Add 0.47552825814757704|0.215|0.095|0.118|0.103 0.777
-190317232539+0000       5003    2 1|Add (-0.18163563200134003)|0.218|0.098|0.122|0.107 0.777
-190317232539+0000       5003    3 2|Add (-0.587785252292474)|0.220|0.099|0.123|0.108 0.777
-190317232539+0000       5003    4 3|Add (-0.18163563200134003)|0.221|0.101|0.124|0.109 0.777
-190317232539+0000       5003    5 5|Add 0.293892626146237|0.774|0.674|0.733|0.672 0.777
-190317232539+0000       5003    6 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000 0.000
-190317232539+0000       5003    dvector-trig3_49198 imprints a response
-190317232539+0000       5003    predictor learning rate: 0.138
-190317232539+0000       5003    Imprinted new response model: 0|Add (-0.587785252292474)|0.593|0.310|0.741|0.573
-190317232539+0000       5003    predictor BMU: 5 difference: 0.000 novelty: 0
-190317232539+0000       5003    learning details (label, model, diff):
-190317232539+0000       5003    0 5|Add 0.47552825814757704|0.687|0.393|0.799|0.641 0.777
-190317232539+0000       5003    1 1|Add (-0.18163563200134003)|0.676|0.383|0.792|0.633 0.777
-190317232539+0000       5003    2 2|Add (-0.587785252292474)|0.675|0.383|0.792|0.633 0.777
-190317232539+0000       5003    3 3|Add (-0.18163563200134003)|0.675|0.383|0.791|0.633 0.777
-190317232539+0000       5003    4 4|Add 0.47552825814757704|0.675|0.382|0.791|0.632 0.777
-190317232539+0000       5003    5 0|Add (-0.587785252292474)|0.593|0.310|0.741|0.573 0.000
-190317232539+0000       5003    --- end reflection report
-190317232539+0000       5003    The correct action would have been Add (-0.7694208842938138)
-190317232539+0000       5003    --- begin imprint report
-190317232539+0000       5003    dvector-trig3_46816 imprints a response
-190317232539+0000       5003    predictor learning rate: 0.016
-190317232539+0000       5003    Imprinted new response model: 0|Add (-0.7694208842938138)|0.774|0.674|0.733|0.672
-190317232539+0000       5003    predictor BMU: 7 difference: 0.000 novelty: 0
-190317232539+0000       5003    learning details (label, model, diff):
-190317232539+0000       5003    0 4|Add 0.47552825814757704|0.214|0.094|0.117|0.103 0.777
-190317232539+0000       5003    1 5|Add 0.47552825814757704|0.215|0.095|0.118|0.103 0.777
-190317232539+0000       5003    2 1|Add (-0.18163563200134003)|0.218|0.098|0.122|0.107 0.777
-190317232539+0000       5003    3 2|Add (-0.587785252292474)|0.220|0.099|0.123|0.108 0.777
-190317232539+0000       5003    4 3|Add (-0.18163563200134003)|0.221|0.101|0.124|0.109 0.777
-190317232539+0000       5003    5 5|Add 0.293892626146237|0.774|0.674|0.733|0.672 0.777
-190317232539+0000       5003    6 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000 0.000
-190317232539+0000       5003    7 0|Add (-0.7694208842938138)|0.774|0.674|0.733|0.672 0.000
-190317232539+0000       5003    --- end imprint report
-190317232539+0000       5003    Adjusting energy of dvector-trig3_46816 because metabolism: 0.11760323466832616 -0.10042818770737873 -> 1.7175046960947432e-2 used=-0.10042818770737873 leftover=0.0
-190317232539+0000       5003    Adjusting energy of dvector-trig3_46816 because pop control: 1.7175046960947432e-2 6.838218757267657e-4 -> 1.78588688366742e-2 used=6.838218757267665e-4 leftover=-8.673617379884035e-19
-190317232539+0000       5003    --- begin classifier models
-190317232539+0000       5003    dvector-trig3_46816's classifier model 0 0.794,0.294
-190317232539+0000       5003    dvector-trig3_46816's classifier model 1 0.976,0.476
-190317232539+0000       5003    dvector-trig3_46816's classifier model 2 0.794,0.182
-190317232539+0000       5003    dvector-trig3_46816's classifier model 3 0.206,0.588
-190317232539+0000       5003    dvector-trig3_46816's classifier model 4 0.024,0.182
-190317232539+0000       5003    dvector-trig3_46816's classifier model 5 0.500,0.476
-190317232539+0000       5003    --- end classifier models
-190317232539+0000       5003    --- begin predictor models
-190317232539+0000       5003    dvector-trig3_46816's predictor model 0: 4|Add 0.47552825814757704|0.214|0.094|0.117|0.103
-190317232539+0000       5003    dvector-trig3_46816's predictor model 1: 5|Add 0.47552825814757704|0.215|0.095|0.118|0.103
-190317232539+0000       5003    dvector-trig3_46816's predictor model 2: 1|Add (-0.18163563200134003)|0.218|0.098|0.122|0.107
-190317232539+0000       5003    dvector-trig3_46816's predictor model 3: 2|Add (-0.587785252292474)|0.220|0.099|0.123|0.108
-190317232539+0000       5003    dvector-trig3_46816's predictor model 4: 3|Add (-0.18163563200134003)|0.221|0.101|0.124|0.109
-190317232539+0000       5003    dvector-trig3_46816's predictor model 5: 5|Add 0.293892626146237|0.774|0.674|0.733|0.672
-190317232539+0000       5003    dvector-trig3_46816's predictor model 6: 0|Add (-0.587785252292474)|0.110|0.000|0.000|0.000
-190317232539+0000       5003    dvector-trig3_46816's predictor model 7: 0|Add (-0.7694208842938138)|0.774|0.674|0.733|0.672
-190317232539+0000       5003    --- end predictor models
-190317232539+0000       5003    WARNING: Unhandled exception: label already exists
+  error, called at src/Data/Datamining/Clustering/SGM4Internal.hs:146:22 in som-10.1.11-BWPhZ0vDJu7JaraIIivxKv:Data.Datamining.Clustering.SGM4Internal
+210730190059+0100       5003    WARNING: Call stack: 
+210730190059+0100       5003    dvector-trig3_47010 archived and removed from lineup
+210730190059+0100       5003    WARNING: Unhandled exception: too few wains
 CallStack (from HasCallStack):
-  error, called at src/Data/Datamining/Clustering/SGM4Internal.hs:146:22 in som-10.1.11-7v37yoRXFSEFYQ7ZzI0ijq:Data.Datamining.Clustering.SGM4Internal
-190317232539+0000       5003    WARNING: Call stack: 
-190317232539+0000       5003    dvector-trig3_46816 archived and removed from lineup
-
-
-
-~/alife/dvector-trig3/db/archive/dvector-trig3_46816
+  error, called at src/ALife/Creatur/Wain/DVector/Prediction/Experiment.hs:318:9 in exp-dvector-prediction-wains-1.0.11-2z6WDGXyJF3GeCIpV8jY8y:ALife.Creatur.Wain.DVector.Prediction.Experiment
+210730190059+0100       5003    WARNING: Call stack: 
+210730190059+0100       5003    dvector-trig3_48175 archived and removed from lineup
 
 
 :l ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker

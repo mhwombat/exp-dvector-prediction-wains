@@ -61,6 +61,7 @@ import           ALife.Creatur.Wain.PersistentStatistics
 import qualified ALife.Creatur.Wain.Predictor                          as P
 import           ALife.Creatur.Wain.Pretty                             (pretty)
 import           ALife.Creatur.Wain.Raw                                (raw)
+import           ALife.Creatur.Wain.Report                             (report)
 import           ALife.Creatur.Wain.Response
     (Response, action, labels, outcomes)
 import qualified ALife.Creatur.Wain.Statistics                         as Stats
@@ -293,8 +294,8 @@ calculateMeanMetabMetric = do
   zoom U.uPrevMeanMetabMetric $ putPS k
   zoom U.uCurrMetabMetrics $ putPS []
 
-report :: String -> StateT Experiment IO ()
-report = zoom universe . U.writeToLog
+writeToLog :: String -> StateT Experiment IO ()
+writeToLog = zoom universe . U.writeToLog
 
 run :: [PatternWain]
       -> StateT (U.Universe PatternWain) IO [PatternWain]
@@ -321,16 +322,25 @@ run' :: StateT Experiment IO ()
 run' = do
   (e0, ec0) <- totalEnergy
   a <- use subject
-  report $ "---------- " ++ agentId a ++ "'s turn ----------"
-  report $ "At beginning of turn, " ++ agentId a
+  writeToLog $ "---------- start of " ++ agentId a ++ "'s turn ----------"
+  writeToLog $ "At beginning of turn, " ++ agentId a
     ++ "'s summary: " ++ pretty (customStats a)
+  mapM_ writeToLog . map ("before: " ++) $ report a
+  -- writeToLog $ "..... start of reward ....."
   rewardPrediction
+  -- writeToLog $ "..... end of reward ....."
+  -- writeToLog $ "..... start of metabolism ....."
   runMetabolism
+  -- writeToLog $ "..... end of metabolism ....."
   autoPopControl <- use (universe . U.uPopControl)
   when autoPopControl applyPopControl
   subject %= W.incAge
+  -- writeToLog $ "..... start of flirt option ....."
   maybeFlirt
+  -- writeToLog $ "..... end of flirt option ....."
+  -- writeToLog $ "..... start of prediction ....."
   makePrediction
+  -- writeToLog $ "..... end of prediction ....."
   a' <- use subject
   -- assign (summary.rNetDeltaE) (energy a' - energy a)
   unless (isAlive a') $ assign (summary.rDeathCount) 1
@@ -341,12 +351,14 @@ run' = do
   measureMetabolism
   killIfTooOld
   agentStats <- ((customStats a' ++) . summaryStats) <$> use summary
-  report $ "At end of turn, " ++ agentId a
+  writeToLog $ "At end of turn, " ++ agentId a
     ++ "'s summary: " ++ pretty agentStats
   rsf <- use (universe . U.uRawStatsFile)
   zoom universe $ writeRawStats (agentId a) rsf agentStats
   sf <- use (universe . U.uStatsFile)
   zoom universe $ updateStats agentStats sf
+  mapM_ writeToLog . map ("after: " ++) $ report a
+  writeToLog $ "---------- end of " ++ agentId a ++ "'s turn ----------"
 
 customStats :: PatternWain -> [Stats.Statistic]
 customStats w = Stats.stats w
@@ -380,8 +392,8 @@ balanceEnergyEquation e0 ec0 ef ecf = do
   let netDeltaE2 = ef - e0
   let err = abs (netDeltaE1 - netDeltaE2)
   when (err > 0.000001) $ do
-    report $ "WARNING: Adult energy equation doesn't balance"
-    report $ "e0=" ++ show e0 ++ ", ef=" ++ show ef
+    writeToLog $ "WARNING: Adult energy equation doesn't balance"
+    writeToLog $ "e0=" ++ show e0 ++ ", ef=" ++ show ef
       ++ ", netDeltaE2=" ++ show netDeltaE2
       ++ ", netDeltaE1=" ++ show netDeltaE1
       ++ ", err=" ++ show err
@@ -389,8 +401,8 @@ balanceEnergyEquation e0 ec0 ef ecf = do
   let childNetDeltaE2 = ecf - ec0
   let childErr = abs (childNetDeltaE1 - childNetDeltaE2)
   when (childErr > 0.000001) $ do
-    report $ "WARNING: Child energy equation doesn't balance"
-    report $ "ec0=" ++ show ec0 ++ ", ecf=" ++ show ecf
+    writeToLog $ "WARNING: Child energy equation doesn't balance"
+    writeToLog $ "ec0=" ++ show ec0 ++ ", ecf=" ++ show ecf
       ++ ", childNetDeltaE2=" ++ show childNetDeltaE2
       ++ ", childNetDeltaE1=" ++ show childNetDeltaE1
       ++ ", childErr=" ++ show childErr
@@ -547,8 +559,8 @@ flirt = do
     <- liftIO . evalRandIO $ W.mate a b babyName
   if null msgs
     then do
-      report $ agentId a ++ " and " ++ agentId b ++ " mated"
-      report $ "Contribution to child: " ++
+      writeToLog $ agentId a ++ " and " ++ agentId b ++ " mated"
+      writeToLog $ "Contribution to child: " ++
         agentId a ++ "'s share is " ++ show aMatingDeltaE ++ " " ++
         agentId b ++ "'s share is " ++ show bMatingDeltaE
       assign subject a'
@@ -557,7 +569,7 @@ flirt = do
       (summary . rMatingDeltaE) += aMatingDeltaE
       (summary . rOtherMatingDeltaE) += bMatingDeltaE
       (summary . rMateCount) += 1
-    else mapM_ report msgs
+    else mapM_ writeToLog msgs
 
 recordBirths :: StateT Experiment IO ()
 recordBirths = do
@@ -622,7 +634,7 @@ adjustWainEnergy
     wainSelector deltaE statLens reason = do
   w <- use wainSelector
   let (w', used) = W.adjustEnergy deltaE w
-  report $ "Adjusting energy of " ++ agentId w
+  writeToLog $ "Adjusting energy of " ++ agentId w
     ++ " because " ++ reason ++ ": " ++ show (view W.energy w)
     ++ " " ++ show deltaE
     ++ " -> " ++ show (view W.energy w')
@@ -634,24 +646,24 @@ letSubjectReflect
   :: PatternWain -> Response Action -> StateT Experiment IO ()
 letSubjectReflect wBefore r = do
   w <- use subject
-  report $ "The action taken was " ++ pretty (view action r)
+  writeToLog $ "The action taken was " ++ pretty (view action r)
   -- Learn the outcome of the action taken
   let (rReflect, w') = W.reflect r wBefore w
   whenM (use (universe . U.uShowReflectionReport)) $ do
-    report "--- begin reflection report"
-    mapM_ report $ W.prettyReflectionReport w rReflect
-    report "--- end reflection report"
+    writeToLog "--- begin reflection report"
+    mapM_ writeToLog $ W.prettyReflectionReport w rReflect
+    writeToLog "--- end reflection report"
   -- Learn the correct response
   v1 <- zoom (universe . U.uPrevVector) getPS
   let x1 = head v1
   x2 <- head <$> zoom (universe . U.uCurrVector) getPS
   let a = postdict x1 x2
-  report $ "The correct action would have been " ++ pretty a
+  writeToLog $ "The correct action would have been " ++ pretty a
   let (rImprint, w'') = W.imprintResponse (view labels r) a w'
   whenM (use (universe . U.uShowImprintReport)) $ do
-    report "--- begin imprint report"
-    mapM_ report $ W.prettyResponseImprintReport w rImprint
-    report "--- end imprint report"
+    writeToLog "--- begin imprint report"
+    mapM_ writeToLog $ W.prettyResponseImprintReport w rImprint
+    writeToLog "--- end imprint report"
   -- Update the stats
   assign subject w''
   assign (summary . rRewardPredictionErr) $ W.happinessError rReflect
