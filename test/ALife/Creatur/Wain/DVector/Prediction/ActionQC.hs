@@ -19,7 +19,7 @@ module ALife.Creatur.Wain.DVector.Prediction.ActionQC
 import           ALife.Creatur.Wain.DVector.Double
     (maxDouble, minDouble)
 import           ALife.Creatur.Wain.DVector.Prediction.Action
-import           ALife.Creatur.Wain.TestUtils
+import           ALife.Creatur.Gene.Test
     ( prop_diploid_expressable
     , prop_diploid_identity
     , prop_diploid_readable

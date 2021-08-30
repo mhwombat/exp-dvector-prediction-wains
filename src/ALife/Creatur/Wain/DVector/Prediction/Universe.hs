@@ -107,11 +107,11 @@ import           ALife.Creatur.Wain.DVector.Prediction.Action
     (Action)
 import           ALife.Creatur.Wain.DVector.Prediction.DataSource
     (DataSource, mkDataSource)
-import           ALife.Creatur.Wain.PlusMinusOne
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne
     (PM1Double)
 import           ALife.Creatur.Wain.Response
     (Response)
-import           ALife.Creatur.Wain.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble)
 import           Control.Exception
     (SomeException, try)

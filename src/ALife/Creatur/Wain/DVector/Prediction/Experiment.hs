@@ -61,15 +61,14 @@ import           ALife.Creatur.Wain.PersistentStatistics
 import qualified ALife.Creatur.Wain.Predictor                          as P
 import           ALife.Creatur.Wain.Pretty                             (pretty)
 import           ALife.Creatur.Wain.Raw                                (raw)
-import           ALife.Creatur.Wain.Report                             (report)
 import           ALife.Creatur.Wain.Response
     (Response, action, labels, outcomes)
 import qualified ALife.Creatur.Wain.Statistics                         as Stats
-import           ALife.Creatur.Wain.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble, uiToDouble)
-import           ALife.Creatur.Wain.Util
+import           ALife.Creatur.Gene.Numeric.Util
     (unitInterval)
-import           ALife.Creatur.Wain.Weights
+import           ALife.Creatur.Gene.Numeric.Weights
     (makeWeights, weightAt)
 import           Control.Conditional                                   (whenM)
 import           Control.Lens                                          hiding
@@ -325,7 +324,7 @@ run' = do
   writeToLog $ "---------- start of " ++ agentId a ++ "'s turn ----------"
   writeToLog $ "At beginning of turn, " ++ agentId a
     ++ "'s summary: " ++ pretty (customStats a)
-  mapM_ writeToLog . map ("before: " ++) $ report a
+  -- mapM_ writeToLog . map ("before: " ++) $ report a
   -- writeToLog $ "..... start of reward ....."
   rewardPrediction
   -- writeToLog $ "..... end of reward ....."
@@ -357,7 +356,7 @@ run' = do
   zoom universe $ writeRawStats (agentId a) rsf agentStats
   sf <- use (universe . U.uStatsFile)
   zoom universe $ updateStats agentStats sf
-  mapM_ writeToLog . map ("after: " ++) $ report a
+  -- mapM_ writeToLog . map ("after: " ++) $ report a
   writeToLog $ "---------- end of " ++ agentId a ++ "'s turn ----------"
 
 customStats :: PatternWain -> [Stats.Statistic]

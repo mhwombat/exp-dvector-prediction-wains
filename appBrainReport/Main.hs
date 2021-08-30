@@ -17,7 +17,7 @@ import ALife.Creatur.Wain (Wain, brain)
 import ALife.Creatur.Wain.Brain (classifier, predictor)
 import ALife.Creatur.Wain.ExamineAgent (fetchObjects)
 import ALife.Creatur.Wain.GeneticSOM (Label, modelMap, counterMap, tweaker)
-import ALife.Creatur.Wain.PlusMinusOne (pm1ToDouble)
+import ALife.Creatur.Gene.Numeric.PlusMinusOne (pm1ToDouble)
 import ALife.Creatur.Wain.Pretty (Pretty(..))
 import ALife.Creatur.Wain.Response (Response, labels, action, outcomes)
 import ALife.Creatur.Wain.DVector.Prediction.Experiment

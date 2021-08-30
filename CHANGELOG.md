@@ -1,5 +1,7 @@
 # Changelog for exp-uivector-prediction-wains
 
+1.0.12 Migrate from creatur-wains-test-utils to creatur-genes.
+
 1.0.11 Revamped to use creatur-dvector-wains 1.1.3 (which uses SGM4).
 
 1.0.10 Fixed minor bug in extendBoundaries.

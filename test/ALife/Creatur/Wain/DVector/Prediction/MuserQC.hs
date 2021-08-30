@@ -28,11 +28,11 @@ import           ALife.Creatur.Wain.DVector.Prediction.ActionQC
 import           ALife.Creatur.Wain.DVector.Prediction.Muser
 import           ALife.Creatur.Wain.GeneticSOM
     (Label)
-import           ALife.Creatur.Wain.PlusMinusOne
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne
     (pm1ToDouble)
 import           ALife.Creatur.Wain.Probability
     (Probability)
-import           ALife.Creatur.Wain.TestUtils
+import           ALife.Creatur.Gene.Test
 import           Control.DeepSeq
     (deepseq)
 import           Control.Lens

@@ -29,7 +29,7 @@ import           ALife.Creatur.Wain.DVector.Prediction.Action
     (Action, actionDiff, makeActionSimilar)
 import           ALife.Creatur.Wain.GeneticSOM
     (Difference, Tweaker (..))
-import           ALife.Creatur.Wain.PlusMinusOne
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne
     (adjustPM1Vector)
 import           ALife.Creatur.Wain.Pretty
     (Pretty)
@@ -37,9 +37,9 @@ import           ALife.Creatur.Wain.Response
     (Response (..), labelSimilarity)
 import           ALife.Creatur.Wain.Statistics
     (Statistical (..), prefix)
-import           ALife.Creatur.Wain.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble)
-import           ALife.Creatur.Wain.Weights
+import           ALife.Creatur.Gene.Numeric.Weights
     (Weights, weightedSum)
 import           Control.DeepSeq
     (NFData)

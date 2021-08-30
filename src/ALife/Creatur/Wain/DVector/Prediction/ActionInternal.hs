@@ -26,7 +26,7 @@ import           ALife.Creatur.Wain.Pretty
     (Pretty)
 import           ALife.Creatur.Wain.Statistics
     (Statistical (..), dStat, popStdDev)
-import           ALife.Creatur.Wain.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble, doubleToUI)
 import           Control.DeepSeq
     (NFData)

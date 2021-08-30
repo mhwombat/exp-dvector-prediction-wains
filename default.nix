@@ -7,7 +7,7 @@ in
       som = ../som;
       creatur = ../creatur;
       creatur-wains = ../creatur-wains;
-      creatur-wains-test-utils = ../creatur-wains-test-utils;
+      creatur-genes = ../creatur-genes;
       creatur-dvector-wains = ../creatur-dvector-wains;
       gray-extended = ../gray-extended;
       grid = ../grid;

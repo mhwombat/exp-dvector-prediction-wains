@@ -25,8 +25,8 @@ import           ALife.Creatur.Wain.DVector.Prediction.ActionQC
     ()
 import           ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
 import           ALife.Creatur.Wain.Response
-    (Response (..))
-import           ALife.Creatur.Wain.TestUtils
+    (sizedArbResponse, Response (..))
+import           ALife.Creatur.Gene.Test
     ( prop_diploid_expressable
     , prop_diploid_identity
     , prop_diploid_readable
@@ -34,13 +34,11 @@ import           ALife.Creatur.Wain.TestUtils
     , prop_makeSimilar_works
     , prop_serialize_round_trippable
     , prop_show_read_round_trippable
-    , sizedArbResponse
-    , sizedArbWeights
     )
-import           ALife.Creatur.Wain.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble, uiToDouble)
-import           ALife.Creatur.Wain.Weights
-    (Weights, toUIDoubles)
+import           ALife.Creatur.Gene.Numeric.Weights
+    (Weights, sizedArbWeights, toUIDoubles)
 import qualified Numeric.ApproxEq                                      as N
 import           Test.Framework
     (Test, testGroup)

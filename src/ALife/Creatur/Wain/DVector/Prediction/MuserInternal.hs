@@ -35,7 +35,7 @@ import           ALife.Creatur.Wain.DVector.Prediction.Action
 import           ALife.Creatur.Wain.GeneticSOM
     (Label)
 import qualified ALife.Creatur.Wain.Muser                     as M
-import           ALife.Creatur.Wain.PlusMinusOne
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne
     (PM1Double, pm1ToDouble)
 import           ALife.Creatur.Wain.Pretty
     (Pretty)
@@ -80,11 +80,10 @@ makeLenses ''DMuser
 instance Pretty DMuser
 
 instance Statistical DMuser where
-  stats (DMuser (eo:po:bo:lso:_) d w) = [iStat "depth" d,
+  stats (DMuser (eo:po:lso:_) d w) = [iStat "depth" d,
          dStat "width" w,
          dStat "default energy outcome" . pm1ToDouble $ eo,
          dStat "default passion outcome" . pm1ToDouble $ po,
-         dStat "default boredom outcome" . pm1ToDouble $ bo,
          dStat "default litterSize outcome" . pm1ToDouble $ lso]
   stats _ = error "default outcome list is too short"
 
