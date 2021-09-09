@@ -39,7 +39,7 @@ import           GHC.Generics
 import           System.Random
     (Random, random, randomR)
 
-data Action = Add Double
+newtype Action = Add Double
   deriving (Show, Read, Eq, Ord, Generic, NFData)
 
 mkAction :: Double -> Action
@@ -85,8 +85,8 @@ expandActionList f as = map mkAction $ nub (es ++ ms ++ xs)
 -- Don't need to sanitise values here, mkAction will do it
 extendBoundaries :: Double -> [Double] -> [Double]
 extendBoundaries _ [] = [1]
-extendBoundaries f (x:[])
-  = [max (-1) (x - f*(abs x)), min 1 (x + f*(abs x))]
+extendBoundaries f [x]
+  = [max (-1) (x - f * abs x), min 1 (x + f * abs x)]
 extendBoundaries f xs
   = [max (-1) (head xs - f*sd), min 1 (last xs + f*sd)]
   where sd = popStdDev xs

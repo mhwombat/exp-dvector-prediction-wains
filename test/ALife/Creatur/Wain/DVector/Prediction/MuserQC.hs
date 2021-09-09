@@ -10,8 +10,6 @@
 -- QuickCheck tests.
 --
 ------------------------------------------------------------------------
-{-# LANGUAGE DeriveAnyClass    #-}
-{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module ALife.Creatur.Wain.DVector.Prediction.MuserQC
@@ -58,12 +56,12 @@ instance Arbitrary DMuser where
 -- TODO: Make genetic encoding of PM1Double more accurate
 equivMuser :: DMuser -> DMuser -> Bool
 equivMuser x y
-  = (and $ zipWith (N.within 500)
+  = and (zipWith (N.within 500)
            (map pm1ToDouble $ view defaultOutcomes x)
            (map pm1ToDouble $ view defaultOutcomes y))
-      && (N.within 2 (fromIntegral $ view depth x)
-           (fromIntegral $ view depth y))
-      && (N.within 2 (view width x) (view width y))
+      && N.within 2 (fromIntegral $ view depth x)
+           (fromIntegral $ view depth y)
+      && N.within 2 (view width x) (view width y)
 
 prop_generateResponses_never_causes_error
   :: DMuser

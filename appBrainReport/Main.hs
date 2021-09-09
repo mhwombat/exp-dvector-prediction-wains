@@ -47,7 +47,7 @@ describePredictorModels
 describePredictorModels w = map f rs
   where rs = M.toList . modelMap . view (brain . predictor) $ w
         f (l, r) = agentId w ++ "'s predictor model "
-                     ++ pretty l ++ ": " ++ (describePredictorModel r cMap)
+                     ++ pretty l ++ ": " ++ describePredictorModel r cMap
         cMap = modelMap . view (brain . classifier) $ w
 
 describePredictorModel

@@ -94,7 +94,7 @@ instance G.Genetic DMuser where
     d <- G.get
     w <- G.get
     -- Use the safe constructor!
-    case (makeMuser <$> o <*> d <*> w) of
+    case makeMuser <$> o <*> d <*> w of
       Left msgs -> return $ Left msgs
       Right b   -> return b
 
@@ -137,4 +137,4 @@ generateResponse m a (ls, p) = (Response ls a os, p)
 bestHypotheses
   :: DMuser -> [([Label], Probability)] -> [([Label], Probability)]
 bestHypotheses m
-  = take (fromIntegral . _depth $ m) . reverse. sortBy (comparing snd)
+  = take (fromIntegral . _depth $ m) . sortBy (flip (comparing snd))

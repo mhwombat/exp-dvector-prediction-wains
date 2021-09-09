@@ -54,7 +54,7 @@ import           GHC.Generics
 --   NOTE: In order to declare an instance of @Tweaker@, we have to
 --   reference the action type @a@. As a result, @ResponseTweaker@ has
 --   to have a type parameter @a@, even though it is not used.
-data ResponseTweaker = ResponseTweaker Weights
+newtype ResponseTweaker = ResponseTweaker Weights
   deriving (Eq, Show, Read, Pretty, Generic, NFData, Serialize,
             W8.Genetic, Diploid)
 

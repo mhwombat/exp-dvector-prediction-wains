@@ -1,7 +1,7 @@
 cabal-version:      2.4
 name:               exp-dvector-prediction-wains
 synopsis:           experiment
-version:            1.0.12
+version:            1.0.13
 description:
   Please see the README on GitHub at <https://github.com/mhwombat/exp-dvector-prediction-wains#readme>
 homepage:

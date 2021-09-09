@@ -112,16 +112,16 @@ randomPatternWain wName u classifierSize predictorSize = do
                 _rfRange = view U.uClassifierRfRange u,
                 _tfRange = view U.uClassifierTfRange u }
   fc <- randomLearningParams fcp
-  ws <- (makeWeights . take (2*k)) <$> getRandoms
+  ws <- makeWeights . take (2*k) <$> getRandoms
   let c = Cl.buildClassifier fc classifierSize (PatternTweaker ws)
   let fdp = LearningParamRanges
               { _r0Range = view U.uPredictorR0Range u,
                 _rfRange = view U.uPredictorRfRange u,
                 _tfRange = view U.uPredictorTfRange u }
   fd <- randomLearningParams fdp
-  rtw <- (ResponseTweaker . makeWeights . take 2) <$> getRandoms
+  rtw <- ResponseTweaker . makeWeights . take 2 <$> getRandoms
   let p = P.buildPredictor fd predictorSize rtw
-  hw <- (makeWeights . take 4) <$> getRandomRs unitInterval
+  hw <- makeWeights . take 4 <$> getRandomRs unitInterval
   t <- getRandom
   s <- getRandomR (view U.uStrictnessRange u)
   dp <- getRandomR $ view U.uDepthRange u
@@ -249,7 +249,7 @@ evaluateErrors = do
   ps <- zoom U.uNewPredictions getPS
   zoom U.uPrevPredictions $ putPS ps
   zoom U.uNewPredictions $ putPS []
-  when (not . null $ ps) $ do
+  unless (null ps) $ do
     let actual = head xs
     let predictions = map thirdOfThree ps
     let errors = map (\e -> abs (actual - e)) predictions
@@ -349,7 +349,7 @@ run' = do
   updateChildren
   measureMetabolism
   killIfTooOld
-  agentStats <- ((customStats a' ++) . summaryStats) <$> use summary
+  agentStats <- (customStats a' ++) . summaryStats <$> use summary
   writeToLog $ "At end of turn, " ++ agentId a
     ++ "'s summary: " ++ pretty agentStats
   rsf <- use (universe . U.uRawStatsFile)
@@ -378,10 +378,9 @@ fillInSummary s = s
          + _rMatingDeltaE s
          + _rOldAgeDeltaE s
          + _rOtherMatingDeltaE s,
-    _rChildNetDeltaE = 0
+    _rChildNetDeltaE =
          -- include energy given to wains when they are born
-         - _rMatingDeltaE s
-         - _rOtherMatingDeltaE s
+         negate (_rMatingDeltaE s + _rOtherMatingDeltaE s)
   }
 
 balanceEnergyEquation
@@ -391,7 +390,7 @@ balanceEnergyEquation e0 ec0 ef ecf = do
   let netDeltaE2 = ef - e0
   let err = abs (netDeltaE1 - netDeltaE2)
   when (err > 0.000001) $ do
-    writeToLog $ "WARNING: Adult energy equation doesn't balance"
+    writeToLog "WARNING: Adult energy equation doesn't balance"
     writeToLog $ "e0=" ++ show e0 ++ ", ef=" ++ show ef
       ++ ", netDeltaE2=" ++ show netDeltaE2
       ++ ", netDeltaE1=" ++ show netDeltaE1
@@ -400,7 +399,7 @@ balanceEnergyEquation e0 ec0 ef ecf = do
   let childNetDeltaE2 = ecf - ec0
   let childErr = abs (childNetDeltaE1 - childNetDeltaE2)
   when (childErr > 0.000001) $ do
-    writeToLog $ "WARNING: Child energy equation doesn't balance"
+    writeToLog "WARNING: Child energy equation doesn't balance"
     writeToLog $ "ec0=" ++ show ec0 ++ ", ecf=" ++ show ecf
       ++ ", childNetDeltaE2=" ++ show childNetDeltaE2
       ++ ", childNetDeltaE1=" ++ show childNetDeltaE1
@@ -449,7 +448,7 @@ rewardPrediction = do
       minError <- zoom (universe . U.uMinError) getPS
       meanDeltaE <- use (universe . U.uMeanAccuracyDeltaE)
       maxDeltaE <- use (universe . U.uMaxAccuracyDeltaE)
-      let de = if (abs(meanError - minError) < 1e-5)
+      let de = if abs(meanError - minError) < 1e-5
                  then meanDeltaE
                  else (meanDeltaE - maxDeltaE) * (e - minError)
                         / (meanError - minError) + maxDeltaE
@@ -678,8 +677,8 @@ writeRawStats n f xs = do
 
 reportAnyDeaths
   :: [PatternWain] -> StateT (U.Universe PatternWain) IO ()
-reportAnyDeaths ws = mapM_ f ws
-  where f w = when (not . isAlive $ w) $
+reportAnyDeaths = mapM_ f
+  where f w = unless (isAlive w) $
                 U.writeToLog
                   (agentId w ++ " dead at age " ++ show (view W.age w))
 
