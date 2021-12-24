@@ -10,22 +10,30 @@
 -- Do a full analysis of a wain and generate a report.
 --
 ------------------------------------------------------------------------
+{-# LANGUAGE FlexibleContexts #-}
 module Main where
 
-import ALife.Creatur (agentId)
-import ALife.Creatur.Wain (Wain, brain)
-import ALife.Creatur.Wain.Brain (classifier, predictor)
-import ALife.Creatur.Wain.ExamineAgent (fetchObjects)
-import ALife.Creatur.Wain.GeneticSOM (Label, modelMap, counterMap, tweaker)
-import ALife.Creatur.Gene.Numeric.PlusMinusOne (pm1ToDouble)
-import ALife.Creatur.Wain.Pretty (Pretty(..))
-import ALife.Creatur.Wain.Response (Response, labels, action, outcomes)
-import ALife.Creatur.Wain.DVector.Prediction.Experiment
-import Control.Lens (view)
-import Data.List (intercalate)
-import qualified Data.Map.Strict as M
-import System.Environment
-import Text.Printf (printf)
+import           ALife.Creatur                                    (agentId)
+import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne          as PM1
+import           ALife.Creatur.Wain                               (Wain, brain)
+import           ALife.Creatur.Wain.Brain                         (classifier,
+                                                                   predictor)
+import           ALife.Creatur.Wain.DVector.Prediction.Experiment
+import           ALife.Creatur.Wain.ExamineAgent                  (fetchObjects)
+import           ALife.Creatur.Wain.GeneticSOM                    (Label,
+                                                                   counterMap,
+                                                                   modelMap,
+                                                                   tweaker)
+import           ALife.Creatur.Wain.Pretty                        (Pretty (..))
+import           ALife.Creatur.Wain.Response                      (Response,
+                                                                   action,
+                                                                   labels,
+                                                                   outcomes)
+import           Control.Lens                                     (view)
+import           Data.List                                        (intercalate)
+import qualified Data.Map.Strict                                  as M
+import           System.Environment
+import           Text.Printf                                      (printf)
 
 main :: IO ()
 main = do
@@ -58,7 +66,7 @@ describePredictorModel r cMap =
     where ls = view labels r
           a = view action r
           os = view outcomes r
-          format xs =  intercalate "|" . map (printf "%.3f" .  pm1ToDouble) $ xs
+          format xs =  intercalate "|" . map (printf "%.3f" .  PM1.wide) $ xs
 
 forceLookup :: Ord p => p -> M.Map p a -> a
 forceLookup k m = v

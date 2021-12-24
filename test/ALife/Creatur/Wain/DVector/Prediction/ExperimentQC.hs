@@ -16,8 +16,7 @@ module ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
   ) where
 
 -- import ALife.Creatur.Wain.DVector.Prediction.Experiment
-import           Test.Framework
-    (Test, testGroup)
+import           Test.Framework (Test, testGroup)
 -- import Test.Framework.Providers.QuickCheck2 (testProperty)
 -- import Test.QuickCheck
 
@@ -25,7 +24,7 @@ import           Test.Framework
 --   :: Positive Int -> Positive Int -> Positive Int -> Positive Double -> Property
 -- prop_idealPopControlDeltaE_counteracts_overpopulation
 --   (Positive pIdeal) (Positive deltaP) (Positive deltaP2) (Positive deltaE)
---     = property $ ec1 < 0 && ec2 < 0 && ec2 < ec1
+--     = ec1 < 0 && ec2 < 0 && ec2 < ec1
 --   where p1 = pIdeal + deltaP
 --         p2 = p1 + deltaP2
 --         ec1 = idealPopControlDeltaE pIdeal p1 deltaE
@@ -35,7 +34,7 @@ import           Test.Framework
 --   :: Positive Int -> Positive Int -> Positive Int -> Positive Double -> Property
 -- prop_idealPopControlDeltaE_counteracts_underpopulation
 --   (Positive p1) (Positive deltaP) (Positive deltaP2) (Positive deltaE)
---     = property $ ec1 > 0 && ec2 > 0 && ec2 < ec1
+--     = ec1 > 0 && ec2 > 0 && ec2 < ec1
 --   where p2 = p1 + deltaP
 --         pIdeal = p2 + deltaP2
 --         ec1 = idealPopControlDeltaE pIdeal p1 deltaE

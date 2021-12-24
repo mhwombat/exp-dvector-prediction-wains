@@ -14,36 +14,29 @@
 {-# LANGUAGE DeriveGeneric  #-}
 module ALife.Creatur.Wain.DVector.Prediction.ActionInternal where
 
-import           ALife.Creatur.Genetics.BRGCWord8
-    (Genetic)
-import           ALife.Creatur.Genetics.Diploid
-    (Diploid)
-import           ALife.Creatur.Wain.DVector.Double
-    (diff, makeSimilar, sanitise)
-import           ALife.Creatur.Wain.GeneticSOM
-    (Difference)
-import           ALife.Creatur.Wain.Pretty
-    (Pretty)
-import           ALife.Creatur.Wain.Statistics
-    (Statistical (..), dStat, popStdDev)
-import           ALife.Creatur.Gene.Numeric.UnitInterval
-    (UIDouble, doubleToUI)
-import           Control.DeepSeq
-    (NFData)
-import           Data.List
-    (nub, sort)
-import           Data.Serialize
-    (Serialize)
-import           GHC.Generics
-    (Generic)
-import           System.Random
-    (Random, random, randomR)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval as UI
+import           ALife.Creatur.Genetics.BRGCWord8        (Genetic)
+import           ALife.Creatur.Genetics.Diploid          (Diploid)
+import           ALife.Creatur.Wain.GeneticSOM           (Difference)
+import           ALife.Creatur.Wain.Pretty               (Pretty)
+import           ALife.Creatur.Wain.Statistics           (Statistical (..),
+                                                          dStat, popStdDev)
+import           Control.DeepSeq                         (NFData)
+import qualified Data.Datamining.Pattern.Numeric         as N
+import           Data.List                               (nub, sort)
+import           Data.Serialize                          (Serialize)
+import           GHC.Generics                            (Generic)
+import           System.Random                           (Random, random,
+                                                          randomR)
 
 newtype Action = Add Double
   deriving (Show, Read, Eq, Ord, Generic, NFData)
 
 mkAction :: Double -> Action
 mkAction = Add . sanitise
+
+sanitise :: Double -> Double
+sanitise = max N.minDouble . min N.maxDouble
 
 actionToDouble :: Action -> Double
 actionToDouble (Add x) = x
@@ -70,11 +63,11 @@ postdict x1 x2 = Add z
   where z = sanitise (x2 - x1)
 
 actionDiff :: Action -> Action -> Difference
-actionDiff (Add x) (Add y) = doubleToUI $ diff x y
+actionDiff (Add x) (Add y) = UI.narrow $ N.diff x y
 
-makeActionSimilar :: Action -> UIDouble -> Action -> Action
+makeActionSimilar :: Action -> UI.UIDouble -> Action -> Action
 makeActionSimilar (Add x) r (Add y)
-  = Add $ makeSimilar x r y
+  = Add $ N.makeSimilar x (UI.wide r) y
 
 expandActionList :: Double -> [Action] -> [Action]
 expandActionList f as = map mkAction $ nub (es ++ ms ++ xs)

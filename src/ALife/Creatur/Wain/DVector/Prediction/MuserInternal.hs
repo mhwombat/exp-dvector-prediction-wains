@@ -27,37 +27,26 @@ module ALife.Creatur.Wain.DVector.Prediction.MuserInternal
     defaultOutcomes
   ) where
 
+import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne      as PM1
 import qualified ALife.Creatur.Genetics.BRGCWord8             as G
-import           ALife.Creatur.Genetics.Diploid
-    (Diploid)
-import           ALife.Creatur.Wain.DVector.Prediction.Action
-    (Action, expandActionList)
-import           ALife.Creatur.Wain.GeneticSOM
-    (Label)
+import           ALife.Creatur.Genetics.Diploid               (Diploid)
+import           ALife.Creatur.Wain.DVector.Prediction.Action (Action,
+                                                               expandActionList)
+import           ALife.Creatur.Wain.GeneticSOM                (Label)
 import qualified ALife.Creatur.Wain.Muser                     as M
-import           ALife.Creatur.Gene.Numeric.PlusMinusOne
-    (PM1Double, pm1ToDouble)
-import           ALife.Creatur.Wain.Pretty
-    (Pretty)
-import           ALife.Creatur.Wain.Probability
-    (Probability)
-import           ALife.Creatur.Wain.Response
-    (Response (..))
-import           ALife.Creatur.Wain.Statistics
-    (Statistical, dStat, iStat, stats)
-import           Control.DeepSeq
-    (NFData)
+import           ALife.Creatur.Wain.Pretty                    (Pretty)
+import           ALife.Creatur.Wain.Probability               (Probability)
+import           ALife.Creatur.Wain.Response                  (Response (..))
+import           ALife.Creatur.Wain.Statistics                (Statistical,
+                                                               dStat, iStat,
+                                                               stats)
+import           Control.DeepSeq                              (NFData)
 import           Control.Lens
-import           Data.List
-    (sortBy)
-import           Data.Ord
-    (comparing)
-import           Data.Serialize
-    (Serialize)
-import           Data.Word
-    (Word8)
-import           GHC.Generics
-    (Generic)
+import           Data.List                                    (sortBy)
+import           Data.Ord                                     (comparing)
+import           Data.Serialize                               (Serialize)
+import           Data.Word                                    (Word8)
+import           GHC.Generics                                 (Generic)
 
 -- | Object responsible for generating potential responses for
 --   consideration.
@@ -68,7 +57,7 @@ data DMuser = DMuser
     --   Positive values make the wain optimistic and more likely to
     --   take risks. A negative value makes the wain pessimistic and
     --   risk-averse.
-    _defaultOutcomes :: [PM1Double],
+    _defaultOutcomes :: [PM1.PM1Double],
     -- | Number of possible scenarios a wain will evaluate before
     --   choosing an action.
     _depth           :: Word8,
@@ -82,9 +71,9 @@ instance Pretty DMuser
 instance Statistical DMuser where
   stats (DMuser (eo:po:lso:_) d w) = [iStat "depth" d,
          dStat "width" w,
-         dStat "default energy outcome" . pm1ToDouble $ eo,
-         dStat "default passion outcome" . pm1ToDouble $ po,
-         dStat "default litterSize outcome" . pm1ToDouble $ lso]
+         dStat "default energy outcome" . PM1.wide $ eo,
+         dStat "default passion outcome" . PM1.wide $ po,
+         dStat "default litterSize outcome" . PM1.wide $ lso]
   stats _ = error "default outcome list is too short"
 
 instance G.Genetic DMuser where
@@ -104,7 +93,7 @@ instance M.Muser DMuser where
   defaultOutcomes = view defaultOutcomes
 
 -- | Constructor
-makeMuser :: [PM1Double] -> Word8 -> Double -> Either [String] DMuser
+makeMuser :: [PM1.PM1Double] -> Word8 -> Double -> Either [String] DMuser
 makeMuser os d w
  | d == 0         = Left ["zero depth"]
  | length os < 4 = Left ["default outcome list is too short"]

@@ -19,27 +19,19 @@ module ALife.Creatur.Wain.DVector.Prediction.MuserQC
     sizedArbMuser
   ) where
 
-import           ALife.Creatur.Wain.DVector.Prediction.Action
-    (Action)
-import           ALife.Creatur.Wain.DVector.Prediction.ActionQC
-    ()
-import           ALife.Creatur.Wain.DVector.Prediction.Muser
-import           ALife.Creatur.Wain.GeneticSOM
-    (Label)
-import           ALife.Creatur.Gene.Numeric.PlusMinusOne
-    (pm1ToDouble)
-import           ALife.Creatur.Wain.Probability
-    (Probability)
+import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne        as PM1
 import           ALife.Creatur.Gene.Test
-import           Control.DeepSeq
-    (deepseq)
-import           Control.Lens
-    (view)
+import           ALife.Creatur.Wain.DVector.Prediction.Action   (Action)
+import           ALife.Creatur.Wain.DVector.Prediction.ActionQC ()
+import           ALife.Creatur.Wain.DVector.Prediction.Muser
+import           ALife.Creatur.Wain.GeneticSOM                  (Label)
+import           ALife.Creatur.Wain.Probability                 (Probability)
+import           Control.DeepSeq                                (deepseq)
+import           Control.Lens                                   (view)
 import qualified Numeric.ApproxEq                               as N
-import           Test.Framework
-    (Test, testGroup)
-import           Test.Framework.Providers.QuickCheck2
-    (testProperty)
+import           Test.Framework                                 (Test,
+                                                                 testGroup)
+import           Test.Framework.Providers.QuickCheck2           (testProperty)
 import           Test.QuickCheck
 
 sizedArbMuser :: Int -> Gen DMuser
@@ -57,8 +49,8 @@ instance Arbitrary DMuser where
 equivMuser :: DMuser -> DMuser -> Bool
 equivMuser x y
   = and (zipWith (N.within 500)
-           (map pm1ToDouble $ view defaultOutcomes x)
-           (map pm1ToDouble $ view defaultOutcomes y))
+           (map PM1.wide $ view defaultOutcomes x)
+           (map PM1.wide $ view defaultOutcomes y))
       && N.within 2 (fromIntegral $ view depth x)
            (fromIntegral $ view depth y)
       && N.within 2 (view width x) (view width y)
@@ -66,28 +58,28 @@ equivMuser x y
 prop_generateResponses_never_causes_error
   :: DMuser
     -> [Action] -> [([Label], Probability)]
-      -> Property
+      -> Bool
 prop_generateResponses_never_causes_error m as sps
-  = property $ deepseq (generateResponses m as sps) True
+  = deepseq (generateResponses m as sps) True
 
 test :: Test
 test = testGroup "ALife.Creatur.Wain.MuserQC"
   [
     testProperty "prop_serialize_round_trippable - DMuser"
-      (prop_serialize_round_trippable :: DMuser -> Property),
+      (prop_serialize_round_trippable :: DMuser -> Bool),
     testProperty "prop_genetic_round_trippable - DMuser"
-      (prop_genetic_round_trippable equivMuser :: DMuser -> Property),
+      (prop_genetic_round_trippable equivMuser :: DMuser -> Bool),
     -- testProperty "prop_genetic_round_trippable2 - DMuser"
     --   (prop_genetic_round_trippable2
-    --    :: Int -> [Word8] -> DMuser -> Property),
+    --    :: Int -> [Word8] -> DMuser -> Bool),
     testProperty "prop_diploid_identity - DMuser"
-      (prop_diploid_identity (==) :: DMuser -> Property),
+      (prop_diploid_identity (==) :: DMuser -> Bool),
     testProperty "prop_show_read_round_trippable - DMuser"
-      (prop_show_read_round_trippable (==) :: DMuser -> Property),
+      (prop_show_read_round_trippable (==) :: DMuser -> Bool),
     testProperty "prop_diploid_expressable - DMuser"
-      (prop_diploid_expressable :: DMuser -> DMuser -> Property),
+      (prop_diploid_expressable :: DMuser -> DMuser -> Bool),
     testProperty "prop_diploid_readable - DMuser"
-      (prop_diploid_readable :: DMuser -> DMuser -> Property),
+      (prop_diploid_readable :: DMuser -> DMuser -> Bool),
     testProperty "prop_generateResponses_never_causes_error"
       prop_generateResponses_never_causes_error
   ]

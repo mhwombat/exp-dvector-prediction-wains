@@ -29,67 +29,72 @@ module ALife.Creatur.Wain.DVector.Prediction.Experiment
     idealPopControlDeltaE -- exported for testing only
   ) where
 
-import           ALife.Creatur
-    (agentId, isAlive, programVersion)
-import           ALife.Creatur.Persistent
-    (getPS, putPS)
-import           ALife.Creatur.Task
-    (checkPopSize, requestShutdown)
+import           ALife.Creatur                                         (agentId,
+                                                                        isAlive,
+                                                                        programVersion)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval               as UI
+import           ALife.Creatur.Gene.Numeric.Util                       (unitInterval)
+import           ALife.Creatur.Gene.Numeric.Weights                    (makeWeights,
+                                                                        weightAt)
+import           ALife.Creatur.Persistent                              (getPS,
+                                                                        putPS)
+import           ALife.Creatur.Task                                    (checkPopSize,
+                                                                        requestShutdown)
 import qualified ALife.Creatur.Wain                                    as W
 import qualified ALife.Creatur.Wain.Brain                              as B
-import           ALife.Creatur.Wain.Checkpoint
-    (enforceAll)
+import           ALife.Creatur.Wain.Checkpoint                         (enforceAll)
 import qualified ALife.Creatur.Wain.Classifier                         as Cl
 import           ALife.Creatur.Wain.DVector.Pattern                    (Pattern)
-import           ALife.Creatur.Wain.DVector.Prediction.Action
-    (Action, postdict, predict)
-import           ALife.Creatur.Wain.DVector.Prediction.DataSource
-    (endOfData, nextVector)
-import           ALife.Creatur.Wain.DVector.Prediction.Muser
-    (DMuser, makeMuser)
-import           ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker
-    (ResponseTweaker (..))
+import           ALife.Creatur.Wain.DVector.Prediction.Action          (Action,
+                                                                        postdict,
+                                                                        predict)
+import           ALife.Creatur.Wain.DVector.Prediction.DataSource      (endOfData,
+                                                                        nextVector)
+import           ALife.Creatur.Wain.DVector.Prediction.Muser           (DMuser,
+                                                                        makeMuser)
+import           ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker (ResponseTweaker (..))
 import qualified ALife.Creatur.Wain.DVector.Prediction.Universe        as U
-import           ALife.Creatur.Wain.DVector.Tweaker
-    (PatternTweaker (..))
+import           ALife.Creatur.Wain.DVector.Tweaker                    (PatternTweaker (..))
 import qualified ALife.Creatur.Wain.DVector.Wain                       as UW
-import           ALife.Creatur.Wain.GeneticSOM
-    (LearningParamRanges (..), numModels, randomLearningParams, schemaQuality,
-    tweaker)
-import           ALife.Creatur.Wain.PersistentStatistics
-    (clearStats, readStats, updateStats)
+import           ALife.Creatur.Wain.GeneticSOM                         (LearningParamRanges (..),
+                                                                        numModels,
+                                                                        randomLearningParams,
+                                                                        schemaQuality,
+                                                                        tweaker)
+import           ALife.Creatur.Wain.PersistentStatistics               (clearStats,
+                                                                        readStats,
+                                                                        updateStats)
 import qualified ALife.Creatur.Wain.Predictor                          as P
 import           ALife.Creatur.Wain.Pretty                             (pretty)
 import           ALife.Creatur.Wain.Raw                                (raw)
-import           ALife.Creatur.Wain.Response
-    (Response, action, labels, outcomes)
+import           ALife.Creatur.Wain.Response                           (Response,
+                                                                        action,
+                                                                        labels,
+                                                                        outcomes)
 import qualified ALife.Creatur.Wain.Statistics                         as Stats
-import           ALife.Creatur.Gene.Numeric.UnitInterval
-    (UIDouble, uiToDouble)
-import           ALife.Creatur.Gene.Numeric.Util
-    (unitInterval)
-import           ALife.Creatur.Gene.Numeric.Weights
-    (makeWeights, weightAt)
 import           Control.Conditional                                   (whenM)
 import           Control.Lens                                          hiding
-    (universe)
-import           Control.Monad
-    (unless, when)
+                                                                       (universe)
+import           Control.Monad                                         (unless,
+                                                                        when)
 import           Control.Monad.IO.Class                                (liftIO)
-import           Control.Monad.Random
-    (Rand, RandomGen, evalRandIO, getRandom, getRandomR, getRandomRs,
-    getRandoms)
-import           Control.Monad.State.Lazy
-    (StateT, execStateT, get, put)
-import           Data.List                                            (intercalate)
-import           Data.Version
-    (showVersion)
+import           Control.Monad.Random                                  (Rand,
+                                                                        RandomGen,
+                                                                        evalRandIO,
+                                                                        getRandom,
+                                                                        getRandomR,
+                                                                        getRandomRs,
+                                                                        getRandoms)
+import           Control.Monad.State.Lazy                              (StateT,
+                                                                        execStateT,
+                                                                        get,
+                                                                        put)
+import           Data.List                                             (intercalate)
+import           Data.Version                                          (showVersion)
 import           Data.Word                                             (Word64)
 import           Paths_exp_dvector_prediction_wains                    (version)
-import           System.Directory
-    (createDirectoryIfMissing)
-import           System.FilePath
-    (dropFileName)
+import           System.Directory                                      (createDirectoryIfMissing)
+import           System.FilePath                                       (dropFileName)
 
 versionInfo :: String
 versionInfo
@@ -142,7 +147,7 @@ randomPatternWain wName u classifierSize predictorSize = do
 data Summary = Summary
   {
     _rPopSize               :: Int,
-    _rVectorNovelty         :: UIDouble,
+    _rVectorNovelty         :: UI.UIDouble,
     _rVectorAdjustedNovelty :: Int,
     _rPredDeltaE            :: Double,
     _rMetabolismDeltaE      :: Double,
@@ -362,10 +367,8 @@ run' = do
 customStats :: PatternWain -> [Stats.Statistic]
 customStats w = Stats.stats w
   ++ [
-       Stats.dStat "predictorActionWeight" . uiToDouble $
-         ws `weightAt` 0,
-       Stats.dStat "predictorScenarioWeight" . uiToDouble $
-         ws `weightAt` 1
+       Stats.dStat "predictorActionWeight" . UI.wide $ ws `weightAt` 0,
+       Stats.dStat "predictorScenarioWeight" . UI.wide $ ws `weightAt` 1
      ]
   where (ResponseTweaker ws) = view (W.brain . B.predictor . tweaker) w
 
@@ -612,8 +615,8 @@ idealPopControlDeltaE averageEnergy pop desiredPop
 
 totalEnergy :: StateT Experiment IO (Double, Double)
 totalEnergy = do
-  a <- fmap uiToDouble $ view W.energy <$> use subject
-  b <- fmap uiToDouble $ view W.energy <$> use other
+  a <- fmap UI.wide $ view W.energy <$> use subject
+  b <- fmap UI.wide $ view W.energy <$> use other
   d <- W.childEnergy <$> use subject
   e <- W.childEnergy <$> use other
   return (a + b, d + e)
