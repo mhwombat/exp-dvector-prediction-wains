@@ -20,19 +20,19 @@ module ALife.Creatur.Wain.DVector.Prediction.MuserQC
   ) where
 
 import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne        as PM1
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval        as UI
 import           ALife.Creatur.Gene.Test
 import           ALife.Creatur.Wain.DVector.Prediction.Action   (Action)
 import           ALife.Creatur.Wain.DVector.Prediction.ActionQC ()
 import           ALife.Creatur.Wain.DVector.Prediction.Muser
 import           ALife.Creatur.Wain.GeneticSOM                  (Label)
-import           ALife.Creatur.Wain.Probability                 (Probability)
 import           Control.DeepSeq                                (deepseq)
 import           Control.Lens                                   (view)
 import qualified Numeric.ApproxEq                               as N
 import           Test.Framework                                 (Test,
                                                                  testGroup)
 import           Test.Framework.Providers.QuickCheck2           (testProperty)
-import           Test.QuickCheck
+import           Test.QuickCheck.Counterexamples
 
 sizedArbMuser :: Int -> Gen DMuser
 sizedArbMuser n = do
@@ -57,7 +57,7 @@ equivMuser x y
 
 prop_generateResponses_never_causes_error
   :: DMuser
-    -> [Action] -> [([Label], Probability)]
+    -> [Action] -> [([Label], UI.UIDouble)]
       -> Bool
 prop_generateResponses_never_causes_error m as sps
   = deepseq (generateResponses m as sps) True

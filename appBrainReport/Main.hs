@@ -18,18 +18,16 @@ import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne          as PM1
 import           ALife.Creatur.Wain                               (Wain, brain)
 import           ALife.Creatur.Wain.Brain                         (classifier,
                                                                    predictor)
+import           ALife.Creatur.Wain.DVector.Pattern               ()
 import           ALife.Creatur.Wain.DVector.Prediction.Experiment
 import           ALife.Creatur.Wain.ExamineAgent                  (fetchObjects)
-import           ALife.Creatur.Wain.GeneticSOM                    (Label,
-                                                                   counterMap,
-                                                                   modelMap,
-                                                                   tweaker)
+import           ALife.Creatur.Wain.GeneticSOM                    (Label)
 import           ALife.Creatur.Wain.Pretty                        (Pretty (..))
 import           ALife.Creatur.Wain.Response                      (Response,
                                                                    action,
                                                                    labels,
                                                                    outcomes)
-import           Control.Lens                                     (view)
+import qualified Data.Datamining.Clustering.SGM4                  as SOM
 import           Data.List                                        (intercalate)
 import qualified Data.Map.Strict                                  as M
 import           System.Environment
@@ -42,30 +40,30 @@ main = do
   mapM_ report ws
 
 report
-  :: (Pretty p, Pretty a, Pretty ct, Pretty pt)
-    => Wain p ct pt m a -> IO ()
+  :: (SOM.Adjuster ct, SOM.Adjuster pt, Pretty p, Pretty a, Pretty ct, Pretty pt)
+    => Wain ct pt p a m -> IO ()
 report a = do
-  putStrLn $ "Classifier tweaker: " ++ pretty (view tweaker . view classifier . view brain $ a)
-  putStrLn $ "Predictor counts: " ++ pretty (counterMap . view predictor . view brain $ a)
+  putStrLn $ "Classifier tweaker: " ++ pretty (SOM.adjuster . classifier . brain $ a)
+  putStrLn $ "Predictor counts: " ++ pretty (SOM.counterMap . predictor . brain $ a)
   mapM_ putStrLn $ describePredictorModels a
 
 describePredictorModels
   :: (Pretty p, Pretty a)
-    => Wain p ct pt m a -> [String]
+    => Wain ct pt p a m -> [String]
 describePredictorModels w = map f rs
-  where rs = M.toList . modelMap . view (brain . predictor) $ w
+  where rs = M.toList . SOM.modelMap .predictor . brain $ w
         f (l, r) = agentId w ++ "'s predictor model "
                      ++ pretty l ++ ": " ++ describePredictorModel r cMap
-        cMap = modelMap . view (brain . classifier) $ w
+        cMap = SOM.modelMap . classifier . brain $ w
 
 describePredictorModel
   :: (Pretty p, Pretty a)
     => Response a -> M.Map Label p -> String
 describePredictorModel r cMap =
   intercalate "," (map (\l -> pretty (forceLookup l cMap)) ls) ++ '|':pretty a ++ '|':format os
-    where ls = view labels r
-          a = view action r
-          os = view outcomes r
+    where ls = labels r
+          a = action r
+          os = outcomes r
           format xs =  intercalate "|" . map (printf "%.3f" .  PM1.wide) $ xs
 
 forceLookup :: Ord p => p -> M.Map p a -> a

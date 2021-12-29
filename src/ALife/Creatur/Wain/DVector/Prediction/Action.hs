@@ -19,7 +19,8 @@ module ALife.Creatur.Wain.DVector.Prediction.Action
     postdict,
     actionDiff,
     makeActionSimilar,
-    expandActionList
+    expandActionList,
+    ResponseAdjuster(..)
   ) where
 
 import           ALife.Creatur.Wain.DVector.Prediction.ActionInternal

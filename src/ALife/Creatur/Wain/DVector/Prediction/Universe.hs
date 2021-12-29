@@ -90,39 +90,36 @@ module ALife.Creatur.Wain.DVector.Prediction.Universe
     U.writeToLog
   ) where
 
-import           ALife.Creatur
-    (AgentId)
+import           ALife.Creatur                                    (AgentId)
 import qualified ALife.Creatur                                    as A
 import qualified ALife.Creatur.Checklist                          as CL
 import qualified ALife.Creatur.Counter                            as K
 import qualified ALife.Creatur.Database                           as D
 import qualified ALife.Creatur.Database.CachedFileSystem          as CFS
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne          (PM1Double)
+import           ALife.Creatur.Gene.Numeric.UnitInterval          (UIDouble)
 import qualified ALife.Creatur.Logger.SimpleLogger                as SL
 import qualified ALife.Creatur.Namer                              as N
-import           ALife.Creatur.Persistent
-    (Persistent, mkPersistent)
+import           ALife.Creatur.Persistent                         (Persistent,
+                                                                   mkPersistent)
 import qualified ALife.Creatur.Universe                           as U
 import qualified ALife.Creatur.Wain.Checkpoint                    as CP
-import           ALife.Creatur.Wain.DVector.Prediction.Action
-    (Action)
-import           ALife.Creatur.Wain.DVector.Prediction.DataSource
-    (DataSource, mkDataSource)
-import           ALife.Creatur.Gene.Numeric.PlusMinusOne
-    (PM1Double)
-import           ALife.Creatur.Wain.Response
-    (Response)
-import           ALife.Creatur.Gene.Numeric.UnitInterval
-    (UIDouble)
-import           Control.Exception
-    (SomeException, try)
+import           ALife.Creatur.Wain.DVector.Prediction.Action     (Action)
+import           ALife.Creatur.Wain.DVector.Prediction.DataSource (DataSource,
+                                                                   mkDataSource)
+import           ALife.Creatur.Wain.Response                      (Response)
+import           Control.Exception                                (SomeException,
+                                                                   try)
 import           Control.Lens                                     hiding
-    (Setting)
-import           Data.AppSettings
-    (FileLocation (Path), GetSetting (..), Setting (..), readSettings)
-import           Data.Word
-    (Word16, Word64, Word8)
-import           System.Directory
-    (makeRelativeToCurrentDirectory)
+                                                                  (Setting)
+import           Data.AppSettings                                 (FileLocation (Path),
+                                                                   GetSetting (..),
+                                                                   Setting (..),
+                                                                   readSettings)
+import           Data.Word                                        (Word16,
+                                                                   Word32,
+                                                                   Word8)
+import           System.Directory                                 (makeRelativeToCurrentDirectory)
 
 data Universe a = Universe
   {
@@ -145,8 +142,8 @@ data Universe a = Universe
     _uShowImprintReport :: Bool,
     _uSleepBetweenTasks :: Int,
     _uVectorLength :: Int,
-    _uClassifierSizeRange :: (Word64, Word64),
-    _uPredictorSizeRange :: (Word64, Word64),
+    _uClassifierSizeRange :: (Word32, Word32),
+    _uPredictorSizeRange :: (Word32, Word32),
     _uDevotionRange :: (UIDouble, UIDouble),
     _uMaturityRange :: (Word16, Word16),
     _uMaxAge :: Int,
@@ -163,12 +160,12 @@ data Universe a = Universe
     _uPopControlDeltaE :: Persistent Double,
     _uClassifierR0Range :: (UIDouble, UIDouble),
     _uClassifierRfRange :: (UIDouble, UIDouble),
-    _uClassifierTfRange :: (Word64, Word64),
+    _uClassifierTfRange :: (Word32, Word32),
     _uPredictorR0Range :: (UIDouble, UIDouble),
     _uPredictorRfRange :: (UIDouble, UIDouble),
-    _uPredictorTfRange :: (Word64, Word64),
+    _uPredictorTfRange :: (Word32, Word32),
     _uDefaultOutcomeRange :: (PM1Double, PM1Double),
-    _uStrictnessRange :: (Word64, Word64),
+    _uStrictnessRange :: (Word32, Word32),
     _uImprintOutcomeRange :: (PM1Double, PM1Double),
     _uReinforcementDeltasRange :: (PM1Double, PM1Double),
     _uDepthRange :: (Word8, Word8),
@@ -250,11 +247,11 @@ cSleepBetweenTasks = requiredSetting "sleepTimeBetweenTasks"
 cVectorLength :: Setting Int
 cVectorLength = requiredSetting "vectorLength"
 
-cClassifierSizeRange :: Setting (Word64, Word64)
+cClassifierSizeRange :: Setting (Word32, Word32)
 cClassifierSizeRange
   = requiredSetting "classifierSizeRange"
 
-cPredictorSizeRange :: Setting (Word64, Word64)
+cPredictorSizeRange :: Setting (Word32, Word32)
 cPredictorSizeRange
   = requiredSetting "predictorSizeRange"
 
@@ -304,7 +301,7 @@ cClassifierR0Range = requiredSetting "classifierR0Range"
 cClassifierRfRange :: Setting (UIDouble, UIDouble)
 cClassifierRfRange = requiredSetting "classifierRfRange"
 
-cClassifierTfRange :: Setting (Word64, Word64)
+cClassifierTfRange :: Setting (Word32, Word32)
 cClassifierTfRange = requiredSetting "classifierTfRange"
 
 cPredictorR0Range :: Setting (UIDouble, UIDouble)
@@ -313,13 +310,13 @@ cPredictorR0Range = requiredSetting "predictorR0Range"
 cPredictorRfRange :: Setting (UIDouble, UIDouble)
 cPredictorRfRange = requiredSetting "predictorRfRange"
 
-cPredictorTfRange :: Setting (Word64, Word64)
+cPredictorTfRange :: Setting (Word32, Word32)
 cPredictorTfRange = requiredSetting "predictorTfRange"
 
 cDefaultOutcomeRange :: Setting (PM1Double, PM1Double)
 cDefaultOutcomeRange = requiredSetting "defaultOutcomeRange"
 
-cStrictnessRange :: Setting (Word64, Word64)
+cStrictnessRange :: Setting (Word32, Word32)
 cStrictnessRange = requiredSetting "strictnessRange"
 
 cImprintOutcomeRange :: Setting (PM1Double, PM1Double)

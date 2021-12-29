@@ -28,6 +28,7 @@ module ALife.Creatur.Wain.DVector.Prediction.MuserInternal
   ) where
 
 import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne      as PM1
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval      as UI
 import qualified ALife.Creatur.Genetics.BRGCWord8             as G
 import           ALife.Creatur.Genetics.Diploid               (Diploid)
 import           ALife.Creatur.Wain.DVector.Prediction.Action (Action,
@@ -35,7 +36,6 @@ import           ALife.Creatur.Wain.DVector.Prediction.Action (Action,
 import           ALife.Creatur.Wain.GeneticSOM                (Label)
 import qualified ALife.Creatur.Wain.Muser                     as M
 import           ALife.Creatur.Wain.Pretty                    (Pretty)
-import           ALife.Creatur.Wain.Probability               (Probability)
 import           ALife.Creatur.Wain.Response                  (Response (..))
 import           ALife.Creatur.Wain.Statistics                (Statistical,
                                                                dStat, iStat,
@@ -101,22 +101,22 @@ makeMuser os d w
 
 generateResponses
   :: DMuser
-    -> [Action] -> [([Label], Probability)]
-      -> [(Response Action, Probability)]
+    -> [Action] -> [([Label], UI.UIDouble)]
+      -> [(Response Action, UI.UIDouble)]
 generateResponses m as sps = concatMap (generateResponses' m sps') as'
   where sps' = bestHypotheses m sps
         as' = expandActionList (_width m) as
 
 -- | Internal method
 generateResponses'
-  :: DMuser -> [([Label], Probability)] -> Action
-    -> [(Response Action, Probability)]
+  :: DMuser -> [([Label], UI.UIDouble)] -> Action
+    -> [(Response Action, UI.UIDouble)]
 generateResponses' m sps a = map (generateResponse m a) sps
 
 -- | Internal method
 generateResponse
-  :: DMuser -> Action -> ([Label], Probability)
-    -> (Response Action, Probability)
+  :: DMuser -> Action -> ([Label], UI.UIDouble)
+    -> (Response Action, UI.UIDouble)
 generateResponse m a (ls, p) = (Response ls a os, p)
   where os = _defaultOutcomes m
 
@@ -124,6 +124,6 @@ generateResponse m a (ls, p) = (Response ls a os, p)
 --   paired with the probability each scenario is true, selects the
 --   most likely scenarios.
 bestHypotheses
-  :: DMuser -> [([Label], Probability)] -> [([Label], Probability)]
+  :: DMuser -> [([Label], UI.UIDouble)] -> [([Label], UI.UIDouble)]
 bestHypotheses m
   = take (fromIntegral . _depth $ m) . sortBy (flip (comparing snd))

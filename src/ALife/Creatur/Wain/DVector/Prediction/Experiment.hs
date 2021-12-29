@@ -29,72 +29,65 @@ module ALife.Creatur.Wain.DVector.Prediction.Experiment
     idealPopControlDeltaE -- exported for testing only
   ) where
 
-import           ALife.Creatur                                         (agentId,
-                                                                        isAlive,
-                                                                        programVersion)
-import qualified ALife.Creatur.Gene.Numeric.UnitInterval               as UI
-import           ALife.Creatur.Gene.Numeric.Util                       (unitInterval)
-import           ALife.Creatur.Gene.Numeric.Weights                    (makeWeights,
-                                                                        weightAt)
-import           ALife.Creatur.Persistent                              (getPS,
-                                                                        putPS)
-import           ALife.Creatur.Task                                    (checkPopSize,
-                                                                        requestShutdown)
-import qualified ALife.Creatur.Wain                                    as W
-import qualified ALife.Creatur.Wain.Brain                              as B
-import           ALife.Creatur.Wain.Checkpoint                         (enforceAll)
-import qualified ALife.Creatur.Wain.Classifier                         as Cl
-import           ALife.Creatur.Wain.DVector.Pattern                    (Pattern)
-import           ALife.Creatur.Wain.DVector.Prediction.Action          (Action,
-                                                                        postdict,
-                                                                        predict)
-import           ALife.Creatur.Wain.DVector.Prediction.DataSource      (endOfData,
-                                                                        nextVector)
-import           ALife.Creatur.Wain.DVector.Prediction.Muser           (DMuser,
-                                                                        makeMuser)
-import           ALife.Creatur.Wain.DVector.Prediction.ResponseTweaker (ResponseTweaker (..))
-import qualified ALife.Creatur.Wain.DVector.Prediction.Universe        as U
-import           ALife.Creatur.Wain.DVector.Tweaker                    (PatternTweaker (..))
-import qualified ALife.Creatur.Wain.DVector.Wain                       as UW
-import           ALife.Creatur.Wain.GeneticSOM                         (LearningParamRanges (..),
-                                                                        numModels,
-                                                                        randomLearningParams,
-                                                                        schemaQuality,
-                                                                        tweaker)
-import           ALife.Creatur.Wain.PersistentStatistics               (clearStats,
-                                                                        readStats,
-                                                                        updateStats)
-import qualified ALife.Creatur.Wain.Predictor                          as P
-import           ALife.Creatur.Wain.Pretty                             (pretty)
-import           ALife.Creatur.Wain.Raw                                (raw)
-import           ALife.Creatur.Wain.Response                           (Response,
-                                                                        action,
-                                                                        labels,
-                                                                        outcomes)
-import qualified ALife.Creatur.Wain.Statistics                         as Stats
-import           Control.Conditional                                   (whenM)
-import           Control.Lens                                          hiding
-                                                                       (universe)
-import           Control.Monad                                         (unless,
-                                                                        when)
-import           Control.Monad.IO.Class                                (liftIO)
-import           Control.Monad.Random                                  (Rand,
-                                                                        RandomGen,
-                                                                        evalRandIO,
-                                                                        getRandom,
-                                                                        getRandomR,
-                                                                        getRandomRs,
-                                                                        getRandoms)
-import           Control.Monad.State.Lazy                              (StateT,
-                                                                        execStateT,
-                                                                        get,
-                                                                        put)
-import           Data.List                                             (intercalate)
-import           Data.Version                                          (showVersion)
-import           Data.Word                                             (Word64)
-import           Paths_exp_dvector_prediction_wains                    (version)
-import           System.Directory                                      (createDirectoryIfMissing)
-import           System.FilePath                                       (dropFileName)
+import           ALife.Creatur                                    (agentId,
+                                                                   isAlive,
+                                                                   programVersion)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval          as UI
+import           ALife.Creatur.Gene.Numeric.Util                  (unitInterval)
+import           ALife.Creatur.Gene.Numeric.Weights               (makeWeights,
+                                                                   weightAt)
+import           ALife.Creatur.Persistent                         (getPS, putPS)
+import           ALife.Creatur.Task                               (checkPopSize,
+                                                                   requestShutdown)
+import qualified ALife.Creatur.Wain                               as W
+import qualified ALife.Creatur.Wain.Brain                         as B
+import           ALife.Creatur.Wain.Checkpoint                    (enforceAll)
+import           ALife.Creatur.Wain.DVector.Pattern               (DVectorAdjuster (..),
+                                                                   Pattern)
+import           ALife.Creatur.Wain.DVector.Prediction.Action     (Action,
+                                                                   ResponseAdjuster (..),
+                                                                   postdict,
+                                                                   predict)
+import           ALife.Creatur.Wain.DVector.Prediction.DataSource (endOfData,
+                                                                   nextVector)
+import           ALife.Creatur.Wain.DVector.Prediction.Muser      (DMuser,
+                                                                   makeMuser)
+import qualified ALife.Creatur.Wain.DVector.Prediction.Universe   as U
+import qualified ALife.Creatur.Wain.DVector.Wain                  as UW
+import           ALife.Creatur.Wain.GeneticSOM                    (schemaQuality)
+import           ALife.Creatur.Wain.LearningParams                (LearningParamRanges (..),
+                                                                   randomLearningParams)
+import           ALife.Creatur.Wain.PersistentStatistics          (clearStats,
+                                                                   readStats,
+                                                                   updateStats)
+import           ALife.Creatur.Wain.Pretty                        (pretty)
+import           ALife.Creatur.Wain.Response                      (Response,
+                                                                   action,
+                                                                   labels,
+                                                                   outcomes)
+import qualified ALife.Creatur.Wain.Statistics                    as Stats
+import           Control.Conditional                              (whenM)
+import           Control.Lens                                     hiding
+                                                                  (universe)
+import           Control.Monad                                    (unless, when)
+import           Control.Monad.IO.Class                           (liftIO)
+import           Control.Monad.Random                             (Rand,
+                                                                   RandomGen,
+                                                                   evalRandIO,
+                                                                   getRandom,
+                                                                   getRandomR,
+                                                                   getRandomRs,
+                                                                   getRandoms)
+import           Control.Monad.State.Lazy                         (StateT,
+                                                                   execStateT,
+                                                                   get, put)
+import qualified Data.Datamining.Clustering.SGM4                  as SOM
+import           Data.List                                        (intercalate)
+import           Data.Version                                     (showVersion)
+import           Data.Word                                        (Word32)
+import           Paths_exp_dvector_prediction_wains               (version)
+import           System.Directory                                 (createDirectoryIfMissing)
+import           System.FilePath                                  (dropFileName)
 
 versionInfo :: String
 versionInfo
@@ -104,45 +97,46 @@ versionInfo
       ++ ", " ++ ALife.Creatur.programVersion
 
 type PatternWain
-  = W.Wain [Double] PatternTweaker ResponseTweaker DMuser Action
+  = W.Wain DVectorAdjuster ResponseAdjuster [Double] Action DMuser
 
 randomPatternWain
   :: RandomGen r
-    => String -> U.Universe PatternWain -> Word64 -> Word64
+    => String -> U.Universe PatternWain -> Word32 -> Word32
       -> Rand r PatternWain
-randomPatternWain wName u classifierSize predictorSize = do
+randomPatternWain wName u wClassifierSize wPredictorSize = do
   let k = view U.uVectorLength u
-  let fcp = LearningParamRanges
-              { _r0Range = view U.uClassifierR0Range u,
-                _rfRange = view U.uClassifierRfRange u,
-                _tfRange = view U.uClassifierTfRange u }
-  fc <- randomLearningParams fcp
-  ws <- makeWeights . take (2*k) <$> getRandoms
-  let c = Cl.buildClassifier fc classifierSize (PatternTweaker ws)
-  let fdp = LearningParamRanges
-              { _r0Range = view U.uPredictorR0Range u,
-                _rfRange = view U.uPredictorRfRange u,
-                _tfRange = view U.uPredictorTfRange u }
-  fd <- randomLearningParams fdp
-  rtw <- ResponseTweaker . makeWeights . take 2 <$> getRandoms
-  let p = P.buildPredictor fd predictorSize rtw
-  hw <- makeWeights . take 4 <$> getRandomRs unitInterval
+  let wClassifierParamRanges = LearningParamRanges
+              { r0Range = view U.uClassifierR0Range u,
+                rfRange = view U.uClassifierRfRange u,
+                tfRange = view U.uClassifierTfRange u }
+  wClassifierParams <- randomLearningParams wClassifierParamRanges
+  wClassifierWeights <- makeWeights . take (2*k) <$> getRandoms
+  let wClassifierAdjuster = DVectorAdjuster wClassifierParams wClassifierWeights
+  let wClassifier = SOM.makeSGM wClassifierAdjuster (fromIntegral wClassifierSize)
+  let wPredictorParamRanges = LearningParamRanges
+              { r0Range = view U.uPredictorR0Range u,
+                rfRange = view U.uPredictorRfRange u,
+                tfRange = view U.uPredictorTfRange u }
+  wPredictorParams <- randomLearningParams wPredictorParamRanges
+  wPredictorWeights <-  makeWeights . take 2 <$> getRandoms
+  let wPredictorAdjuster = ResponseAdjuster wPredictorParams wPredictorWeights
+  let wPredictor = SOM.makeSGM wPredictorAdjuster (fromIntegral wPredictorSize)
+  wHappinessWeights <- makeWeights . take 3 <$> getRandomRs unitInterval
   t <- getRandom
   s <- getRandomR (view U.uStrictnessRange u)
   dp <- getRandomR $ view U.uDepthRange u
   wp <- getRandomR $ view U.uWidthRange u
-  dos <- take 4 <$> getRandomRs (view U.uDefaultOutcomeRange u)
-  let (Right mr) = makeMuser dos dp wp
-  ios <- take 4 <$> getRandomRs (view U.uImprintOutcomeRange u)
-  rds <- take 4 <$> getRandomRs (view U.uReinforcementDeltasRange u)
-  let (Right wBrain) = B.makeBrain c mr p hw t s ios rds
+  wDefaultOutcomes <- take 3 <$> getRandomRs (view U.uDefaultOutcomeRange u)
+  let (Right wMuser) = makeMuser wDefaultOutcomes dp wp
+  wImprintOutcomes <- take 3 <$> getRandomRs (view U.uImprintOutcomeRange u)
+  wReinforcementDeltas <- take 3 <$> getRandomRs (view U.uReinforcementDeltasRange u)
+  let (Right wBrain) = B.makeBrain wClassifier wMuser wPredictor wHappinessWeights t s wImprintOutcomes wReinforcementDeltas
   wDevotion <- getRandomR . view U.uDevotionRange $ u
   wAgeOfMaturity <- getRandomR . view U.uMaturityRange $ u
   let wPassionDelta = 0
-  let wBoredomDelta = 0
   let wAppearance = replicate k 0
   return $ W.buildWainAndGenerateGenome wName wAppearance wBrain
-    wDevotion wAgeOfMaturity wPassionDelta wBoredomDelta
+    wDevotion wAgeOfMaturity wPassionDelta
 
 data Summary = Summary
   {
@@ -370,7 +364,7 @@ customStats w = Stats.stats w
        Stats.dStat "predictorActionWeight" . UI.wide $ ws `weightAt` 0,
        Stats.dStat "predictorScenarioWeight" . UI.wide $ ws `weightAt` 1
      ]
-  where (ResponseTweaker ws) = view (W.brain . B.predictor . tweaker) w
+  where (ResponseAdjuster _ ws) = SOM.adjuster . B.predictor . W.brain $ w
 
 fillInSummary :: Summary -> Summary
 fillInSummary s = s
@@ -413,13 +407,13 @@ measureMetabolism = do
   a <- use subject
   ccf <- use (universe . U.uChildCostFactor)
   let x = metabMetric 1 a
-                 + sum (map (metabMetric ccf) (view W.litter a))
+                 + sum (map (metabMetric ccf) (W.litter a))
   xs <- zoom (universe . U.uCurrMetabMetrics) getPS
   zoom (universe . U.uCurrMetabMetrics) $ putPS ((agentId a, x):xs)
 
 metabMetric :: Double -> PatternWain -> Double
 metabMetric scale w = scale * n
-  where n = fromIntegral . numModels . view (W.brain . B.classifier) $ w
+  where n = fromIntegral . SOM.size . B.classifier . W.brain $ w
 
 runMetabolism :: StateT Experiment IO ()
 runMetabolism = do
@@ -504,8 +498,8 @@ chooseAction3 w vs = do
     U.writeToLog "--- begin action report"
     mapM_ U.writeToLog $ W.prettyActionReport w decisionReport
     U.writeToLog "--- end action report"
-  U.writeToLog $ agentId w ++ " chooses to " ++ pretty (view action r)
-    ++ " predicting the outcomes " ++ pretty (view outcomes r)
+  U.writeToLog $ agentId w ++ " chooses to " ++ pretty (action r)
+    ++ " predicting the outcomes " ++ pretty (outcomes r)
   return (decisionReport, r, w')
 
 
@@ -530,7 +524,7 @@ makePrediction = do
   when (null dObj) $
     zoom universe . U.writeToLog $ "WARNING: dObj is null"
   let x = head dObj
-  let xPredicted = predict (view action r) x
+  let xPredicted = predict (action r) x
   zoom universe . U.writeToLog $
     agentId a ++ " predicts " ++ show xPredicted
   let ps' = (agentId a, r, xPredicted) : ps
@@ -575,7 +569,7 @@ flirt = do
 recordBirths :: StateT Experiment IO ()
 recordBirths = do
   a <- use subject
-  (summary.rBirthCount) += length (view W.litter a)
+  (summary.rBirthCount) += length (W.litter a)
 
 updateChildren :: StateT Experiment IO ()
 updateChildren = do
@@ -588,7 +582,7 @@ updateChildren = do
 
 killIfTooOld :: StateT Experiment IO ()
 killIfTooOld = do
-  a <- view W.age <$> use subject
+  a <- W.age <$> use subject
   maxAge <- use (universe . U.uMaxAge)
   when (fromIntegral a > maxAge) $
     adjustWainEnergy subject (-100) rOldAgeDeltaE "old age"
@@ -615,8 +609,8 @@ idealPopControlDeltaE averageEnergy pop desiredPop
 
 totalEnergy :: StateT Experiment IO (Double, Double)
 totalEnergy = do
-  a <- fmap UI.wide $ view W.energy <$> use subject
-  b <- fmap UI.wide $ view W.energy <$> use other
+  a <- fmap UI.wide $ W.energy <$> use subject
+  b <- fmap UI.wide $ W.energy <$> use other
   d <- W.childEnergy <$> use subject
   e <- W.childEnergy <$> use other
   return (a + b, d + e)
@@ -636,9 +630,9 @@ adjustWainEnergy
   w <- use wainSelector
   let (w', used) = W.adjustEnergy deltaE w
   writeToLog $ "Adjusting energy of " ++ agentId w
-    ++ " because " ++ reason ++ ": " ++ show (view W.energy w)
+    ++ " because " ++ reason ++ ": " ++ show (W.energy w)
     ++ " " ++ show deltaE
-    ++ " -> " ++ show (view W.energy w')
+    ++ " -> " ++ show (W.energy w')
     ++ " used=" ++ show used ++ " leftover=" ++ show (deltaE - used)
   (summary . statLens) += used
   assign wainSelector w'
@@ -647,7 +641,7 @@ letSubjectReflect
   :: PatternWain -> Response Action -> StateT Experiment IO ()
 letSubjectReflect wBefore r = do
   w <- use subject
-  writeToLog $ "The action taken was " ++ pretty (view action r)
+  writeToLog $ "The action taken was " ++ pretty (action r)
   -- Learn the outcome of the action taken
   let (rReflect, w') = W.reflect r wBefore w
   whenM (use (universe . U.uShowReflectionReport)) $ do
@@ -660,7 +654,7 @@ letSubjectReflect wBefore r = do
   x2 <- head <$> zoom (universe . U.uCurrVector) getPS
   let a = postdict x1 x2
   writeToLog $ "The correct action would have been " ++ pretty a
-  let (rImprint, w'') = W.imprintResponse (view labels r) a w'
+  let (rImprint, w'') = W.imprintResponse (labels r) a w'
   whenM (use (universe . U.uShowImprintReport)) $ do
     writeToLog "--- begin imprint report"
     mapM_ writeToLog $ W.prettyResponseImprintReport w rImprint
@@ -676,14 +670,14 @@ writeRawStats n f xs = do
   liftIO $ createDirectoryIfMissing True (dropFileName f)
   t <- U.currentTime
   liftIO . appendFile f $
-    "time=" ++ show t ++ ",agent=" ++ n ++ ',':raw xs ++ "\n"
+    "time=" ++ show t ++ ",agent=" ++ n ++ ',':(show xs) ++ "\n"
 
 reportAnyDeaths
   :: [PatternWain] -> StateT (U.Universe PatternWain) IO ()
 reportAnyDeaths = mapM_ f
   where f w = unless (isAlive w) $
                 U.writeToLog
-                  (agentId w ++ " dead at age " ++ show (view W.age w))
+                  (agentId w ++ " dead at age " ++ show (W.age w))
 
 mean :: (Eq a, Fractional a, Foldable t) => t a -> a
 mean xs
