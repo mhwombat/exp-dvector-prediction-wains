@@ -141,7 +141,7 @@ randomPatternWain wName u wClassifierSize wPredictorSize = do
 data Summary = Summary
   {
     _rPopSize               :: Int,
-    _rVectorNovelty         :: UI.UIDouble,
+    _rVectorNovelty         :: UI.Double,
     _rVectorAdjustedNovelty :: Int,
     _rPredDeltaE            :: Double,
     _rMetabolismDeltaE      :: Double,

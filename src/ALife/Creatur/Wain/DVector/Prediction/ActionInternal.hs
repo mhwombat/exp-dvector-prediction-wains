@@ -39,7 +39,6 @@ import           Data.Word                               (Word32)
 import           GHC.Generics                            (Generic)
 import           System.Random                           (Random, random,
                                                           randomR)
-import           Test.QuickCheck                         (Arbitrary, arbitrary)
 
 newtype Action = Add Double
   deriving (Show, Read, Eq, Ord, Pretty, Serialize, G.Genetic, Diploid,
@@ -70,12 +69,12 @@ postdict :: Double -> Double -> Action
 postdict x1 x2 = Add z
   where z = sanitise (x2 - x1)
 
-actionDiff :: Action -> Action -> UI.UIDouble
-actionDiff (Add x) (Add y) = UI.narrow $ N.diff x y
+actionDiff :: Action -> Action -> UI.Double
+actionDiff (Add x) (Add y) = UI.narrow $ N.realFloatDiff x y
 
-makeActionSimilar :: Action -> UI.UIDouble -> Action -> Action
+makeActionSimilar :: Action -> UI.Double -> Action -> Action
 makeActionSimilar (Add x) r (Add y)
-  = Add $ N.makeSimilar x (UI.wide r) y
+  = Add $ N.makeOrdFractionalSimilar x (UI.wide r) y
 
 expandActionList :: Double -> [Action] -> [Action]
 expandActionList f as = map mkAction $ nub (es ++ ms ++ xs)
@@ -104,7 +103,7 @@ data ResponseAdjuster = ResponseAdjuster LearningParams Weights
 
 instance SOM.Adjuster ResponseAdjuster where
   type TimeType ResponseAdjuster = Word32
-  type MetricType ResponseAdjuster = UI.UIDouble
+  type MetricType ResponseAdjuster = UI.Double
   type PatternType ResponseAdjuster = Response Action
   learningRate (ResponseAdjuster l _) = toLearningFunction l
   difference (ResponseAdjuster _ ws) x y = weightedSum ws [d1, d2]
@@ -113,13 +112,10 @@ instance SOM.Adjuster ResponseAdjuster where
   makeSimilar _ target r x = Response s a o
     where s = labels x -- never change this
           a = makeActionSimilar (action target) r (action x)
-          o = L.makeSimilar PM1.makeSimilar (outcomes target) r (outcomes x)
+          o = L.makeSimilar PM1.makeDoubleSimilar (outcomes target) r (outcomes x)
 
 instance Statistical ResponseAdjuster where
   stats (ResponseAdjuster l _) = stats l
 
 instance Report ResponseAdjuster where
   report (ResponseAdjuster l _) = report l
-
-instance Arbitrary ResponseAdjuster where
-  arbitrary = ResponseAdjuster <$> arbitrary <*> arbitrary

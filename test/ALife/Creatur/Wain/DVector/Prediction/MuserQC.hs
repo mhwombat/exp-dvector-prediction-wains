@@ -45,7 +45,7 @@ sizedArbMuser n = do
 instance Arbitrary DMuser where
   arbitrary = sized sizedArbMuser
 
--- TODO: Make genetic encoding of PM1Double more accurate
+-- TODO: Make genetic encoding of PM1.Double more accurate
 equivMuser :: DMuser -> DMuser -> Bool
 equivMuser x y
   = and (zipWith (N.within 500)
@@ -57,7 +57,7 @@ equivMuser x y
 
 prop_generateResponses_never_causes_error
   :: DMuser
-    -> [Action] -> [([Label], UI.UIDouble)]
+    -> [Action] -> [([Label], UI.Double)]
       -> Bool
 prop_generateResponses_never_causes_error m as sps
   = deepseq (generateResponses m as sps) True

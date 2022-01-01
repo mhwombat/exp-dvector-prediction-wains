@@ -57,7 +57,7 @@ data DMuser = DMuser
     --   Positive values make the wain optimistic and more likely to
     --   take risks. A negative value makes the wain pessimistic and
     --   risk-averse.
-    _defaultOutcomes :: [PM1.PM1Double],
+    _defaultOutcomes :: [PM1.Double],
     -- | Number of possible scenarios a wain will evaluate before
     --   choosing an action.
     _depth           :: Word8,
@@ -93,7 +93,7 @@ instance M.Muser DMuser where
   defaultOutcomes = view defaultOutcomes
 
 -- | Constructor
-makeMuser :: [PM1.PM1Double] -> Word8 -> Double -> Either [String] DMuser
+makeMuser :: [PM1.Double] -> Word8 -> Double -> Either [String] DMuser
 makeMuser os d w
  | d == 0         = Left ["zero depth"]
  | length os < 4 = Left ["default outcome list is too short"]
@@ -101,22 +101,22 @@ makeMuser os d w
 
 generateResponses
   :: DMuser
-    -> [Action] -> [([Label], UI.UIDouble)]
-      -> [(Response Action, UI.UIDouble)]
+    -> [Action] -> [([Label], UI.Double)]
+      -> [(Response Action, UI.Double)]
 generateResponses m as sps = concatMap (generateResponses' m sps') as'
   where sps' = bestHypotheses m sps
         as' = expandActionList (_width m) as
 
 -- | Internal method
 generateResponses'
-  :: DMuser -> [([Label], UI.UIDouble)] -> Action
-    -> [(Response Action, UI.UIDouble)]
+  :: DMuser -> [([Label], UI.Double)] -> Action
+    -> [(Response Action, UI.Double)]
 generateResponses' m sps a = map (generateResponse m a) sps
 
 -- | Internal method
 generateResponse
-  :: DMuser -> Action -> ([Label], UI.UIDouble)
-    -> (Response Action, UI.UIDouble)
+  :: DMuser -> Action -> ([Label], UI.Double)
+    -> (Response Action, UI.Double)
 generateResponse m a (ls, p) = (Response ls a os, p)
   where os = _defaultOutcomes m
 
@@ -124,6 +124,6 @@ generateResponse m a (ls, p) = (Response ls a os, p)
 --   paired with the probability each scenario is true, selects the
 --   most likely scenarios.
 bestHypotheses
-  :: DMuser -> [([Label], UI.UIDouble)] -> [([Label], UI.UIDouble)]
+  :: DMuser -> [([Label], UI.Double)] -> [([Label], UI.Double)]
 bestHypotheses m
   = take (fromIntegral . _depth $ m) . sortBy (flip (comparing snd))

@@ -96,8 +96,8 @@ import qualified ALife.Creatur.Checklist                          as CL
 import qualified ALife.Creatur.Counter                            as K
 import qualified ALife.Creatur.Database                           as D
 import qualified ALife.Creatur.Database.CachedFileSystem          as CFS
-import           ALife.Creatur.Gene.Numeric.PlusMinusOne          (PM1Double)
-import           ALife.Creatur.Gene.Numeric.UnitInterval          (UIDouble)
+import qualified ALife.Creatur.Gene.Numeric.PlusMinusOne          as PM1
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval          as UI
 import qualified ALife.Creatur.Logger.SimpleLogger                as SL
 import qualified ALife.Creatur.Namer                              as N
 import           ALife.Creatur.Persistent                         (Persistent,
@@ -144,7 +144,7 @@ data Universe a = Universe
     _uVectorLength :: Int,
     _uClassifierSizeRange :: (Word32, Word32),
     _uPredictorSizeRange :: (Word32, Word32),
-    _uDevotionRange :: (UIDouble, UIDouble),
+    _uDevotionRange :: (UI.Double, UI.Double),
     _uMaturityRange :: (Word16, Word16),
     _uMaxAge :: Int,
     _uInitialPopulationSize :: Int,
@@ -156,18 +156,18 @@ data Universe a = Universe
     _uBaseMetabolismDeltaE :: Double,
     _uAdjustableMetabolismDeltaE :: Double,
     _uChildCostFactor :: Double,
-    _uFlirtingFrequency :: UIDouble,
+    _uFlirtingFrequency :: UI.Double,
     _uPopControlDeltaE :: Persistent Double,
-    _uClassifierR0Range :: (UIDouble, UIDouble),
-    _uClassifierRfRange :: (UIDouble, UIDouble),
+    _uClassifierR0Range :: (UI.Double, UI.Double),
+    _uClassifierRfRange :: (UI.Double, UI.Double),
     _uClassifierTfRange :: (Word32, Word32),
-    _uPredictorR0Range :: (UIDouble, UIDouble),
-    _uPredictorRfRange :: (UIDouble, UIDouble),
+    _uPredictorR0Range :: (UI.Double, UI.Double),
+    _uPredictorRfRange :: (UI.Double, UI.Double),
     _uPredictorTfRange :: (Word32, Word32),
-    _uDefaultOutcomeRange :: (PM1Double, PM1Double),
+    _uDefaultOutcomeRange :: (PM1.Double, PM1.Double),
     _uStrictnessRange :: (Word32, Word32),
-    _uImprintOutcomeRange :: (PM1Double, PM1Double),
-    _uReinforcementDeltasRange :: (PM1Double, PM1Double),
+    _uImprintOutcomeRange :: (PM1.Double, PM1.Double),
+    _uReinforcementDeltasRange :: (PM1.Double, PM1.Double),
     _uDepthRange :: (Word8, Word8),
     _uWidthRange :: (Double, Double),
     _uCheckpoints :: [CP.Checkpoint],
@@ -255,7 +255,7 @@ cPredictorSizeRange :: Setting (Word32, Word32)
 cPredictorSizeRange
   = requiredSetting "predictorSizeRange"
 
-cDevotionRange :: Setting (UIDouble, UIDouble)
+cDevotionRange :: Setting (UI.Double, UI.Double)
 cDevotionRange = requiredSetting "devotionRange"
 
 cMaturityRange :: Setting (Word16, Word16)
@@ -292,37 +292,37 @@ cAdjustableMetabolismDeltaE
 cChildCostFactor :: Setting Double
 cChildCostFactor = requiredSetting "childCostFactor"
 
-cFlirtingFrequency :: Setting UIDouble
+cFlirtingFrequency :: Setting UI.Double
 cFlirtingFrequency = requiredSetting "flirtingFrequency"
 
-cClassifierR0Range :: Setting (UIDouble, UIDouble)
+cClassifierR0Range :: Setting (UI.Double, UI.Double)
 cClassifierR0Range = requiredSetting "classifierR0Range"
 
-cClassifierRfRange :: Setting (UIDouble, UIDouble)
+cClassifierRfRange :: Setting (UI.Double, UI.Double)
 cClassifierRfRange = requiredSetting "classifierRfRange"
 
 cClassifierTfRange :: Setting (Word32, Word32)
 cClassifierTfRange = requiredSetting "classifierTfRange"
 
-cPredictorR0Range :: Setting (UIDouble, UIDouble)
+cPredictorR0Range :: Setting (UI.Double, UI.Double)
 cPredictorR0Range = requiredSetting "predictorR0Range"
 
-cPredictorRfRange :: Setting (UIDouble, UIDouble)
+cPredictorRfRange :: Setting (UI.Double, UI.Double)
 cPredictorRfRange = requiredSetting "predictorRfRange"
 
 cPredictorTfRange :: Setting (Word32, Word32)
 cPredictorTfRange = requiredSetting "predictorTfRange"
 
-cDefaultOutcomeRange :: Setting (PM1Double, PM1Double)
+cDefaultOutcomeRange :: Setting (PM1.Double, PM1.Double)
 cDefaultOutcomeRange = requiredSetting "defaultOutcomeRange"
 
 cStrictnessRange :: Setting (Word32, Word32)
 cStrictnessRange = requiredSetting "strictnessRange"
 
-cImprintOutcomeRange :: Setting (PM1Double, PM1Double)
+cImprintOutcomeRange :: Setting (PM1.Double, PM1.Double)
 cImprintOutcomeRange = requiredSetting "imprintOutcomeRange"
 
-cReinforcementDeltasRange :: Setting (PM1Double, PM1Double)
+cReinforcementDeltasRange :: Setting (PM1.Double, PM1.Double)
 cReinforcementDeltasRange = requiredSetting "reinforcementDeltasRange"
 
 cDepthRange :: Setting (Word8, Word8)
