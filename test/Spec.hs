@@ -14,7 +14,8 @@ import           ALife.Creatur.Wain.DVector.Prediction.ActionQC
     (test)
 import           ALife.Creatur.Wain.DVector.Prediction.ExperimentQC
     (test)
-
+import           ALife.Creatur.Wain.DVector.Prediction.MuserQC
+    (test)
 import           Test.Framework                                     as TF
     (Test, defaultMain)
 
@@ -23,6 +24,7 @@ tests =
   [
     -- In increasing order of complexity
     ALife.Creatur.Wain.DVector.Prediction.ActionQC.test,
+    ALife.Creatur.Wain.DVector.Prediction.MuserQC.test,
     ALife.Creatur.Wain.DVector.Prediction.ExperimentQC.test
   ]
 
