@@ -96,7 +96,7 @@ instance M.Muser DMuser where
 makeMuser :: [PM1.Double] -> Word8 -> Double -> Either [String] DMuser
 makeMuser os d w
  | d == 0         = Left ["zero depth"]
- | length os < 4 = Left ["default outcome list is too short"]
+ | length os < 3 = Left ["default outcome list is too short"]
  | otherwise     = Right $ DMuser os d w
 
 generateResponses
